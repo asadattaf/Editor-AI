@@ -1,0 +1,6 @@
+{
+  "name": "مختبر EDITOR",
+  "description": "منصة وتطبيق مختبر EDITOR مع استوديو الأكواد وبناء تطبيقات APK والصوت والترجمة ومشاركة الملفات",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
