@@ -3,131 +3,535 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="EDITOR Lab - free AI chat">
+  <meta name="description" content="EDITOR Lab - direct free AI assistant">
   <title>مختبر EDITOR</title>
   <style>
-    :root{color-scheme:dark;--bg:#080d16;--panel:#111c2e;--panel2:#0b1424;--line:#293a55;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#10b981;--danger:#ef4444}
-    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}.app{height:100%;display:flex;flex-direction:column;max-width:1100px;margin:auto;background:var(--panel)}header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--panel2);border-bottom:1px solid var(--line)}.logo{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-size:22px;font-weight:800}.brand{font-weight:800;font-size:16px;flex:1}.status{color:var(--green);font-size:12px}.toolbar{display:flex;gap:8px}button{border:1px solid var(--line);border-radius:9px;background:#16233a;color:var(--text);padding:8px 11px;cursor:pointer}button:hover{background:#203454}button:disabled{opacity:.5;cursor:not-allowed}.messages{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px}.empty{text-align:center;color:var(--muted);margin:auto;max-width:560px}.msg{max-width:85%;padding:13px 15px;border-radius:15px;line-height:1.8;white-space:pre-wrap;word-break:break-word}.msg.user{align-self:flex-end;background:var(--blue);border-top-right-radius:3px}.msg.assistant{align-self:flex-start;background:#1e293b;border:1px solid var(--line);border-top-left-radius:3px}.msg-head{font-size:11px;color:#bfdbfe;margin-bottom:5px;font-weight:700}.msg.assistant .msg-head{color:#86efac}.composer{display:flex;gap:9px;padding:13px 16px;background:var(--panel2);border-top:1px solid var(--line)}input{flex:1;min-width:0;border:1px solid var(--line);border-radius:11px;background:#16233a;color:var(--text);padding:12px 14px;font-size:14px;outline:none}input:focus{border-color:#3b82f6}.send{background:var(--blue);font-weight:700}.notice{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:2;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#0f172a;box-shadow:0 8px 30px #0008;font-size:12px}.notice.error{border-color:#ef4444;color:#fecaca}.typing{color:#93c5fd}.hint{font-size:12px;color:var(--muted);margin-top:12px}.key{direction:ltr;display:inline-block;font-family:monospace;color:#bfdbfe}@media(max-width:600px){header{padding:10px}.messages{padding:14px}.msg{max-width:94%}.toolbar button{padding:7px 8px}.toolbar span{display:none}}
+    :root {
+      color-scheme: dark;
+      --bg: #050b14;
+      --panel: #0d1626;
+      --panel-strong: #111d2f;
+      --panel-soft: #16233a;
+      --line: #2d3f5d;
+      --text: #edf6ff;
+      --muted: #9bb0ca;
+      --blue: #3b82f6;
+      --blue-soft: #1d4ed8;
+      --green: #22c55e;
+      --danger: #ef4444;
+      --shadow: rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body, #app { width: 100%; height: 100%; margin: 0; }
+    body {
+      background: linear-gradient(180deg, #050b14 0%, #091321 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .app {
+      height: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: rgba(13, 22, 38, 0.92);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, #0c1729 0%, #0d1b2d 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 22px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 18px rgba(14,116,144,0.2);
+    }
+
+    .brand {
+      flex: 1;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: .02em;
+    }
+
+    .header-status {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar button,
+    .composer button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: 0.15s ease;
+      font-weight: 700;
+    }
+
+    .toolbar button:hover,
+    .composer button:hover {
+      background: #22365d;
+      transform: translateY(-1px);
+    }
+
+    .toolbar button:disabled,
+    .composer button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .empty {
+      margin: auto 0;
+      text-align: center;
+      color: var(--muted);
+      padding: 24px 18px 0;
+    }
+
+    .empty h2 {
+      font-size: clamp(1.3rem, 2vw, 2rem);
+      margin: 0 0 10px;
+      color: var(--text);
+    }
+
+    .empty p {
+      margin: 8px 0;
+      line-height: 1.8;
+    }
+
+    .hint {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .key {
+      display: inline-block;
+      direction: ltr;
+      word-break: break-all;
+      font-family: ui-monospace, SFMono-Regular, "Consolas", monospace;
+      font-size: 11px;
+      color: #dbeafe;
+      margin-top: 6px;
+    }
+
+    .msg {
+      max-width: 82%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+      line-height: 1.8;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .msg.user {
+      margin-left: auto;
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      border-top-right-radius: 6px;
+    }
+
+    .msg.assistant {
+      margin-right: auto;
+      background: #152338;
+      border: 1px solid var(--line);
+      border-top-left-radius: 6px;
+    }
+
+    .msg-head {
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      opacity: .92;
+    }
+
+    .msg.user .msg-head { color: #dbeafe; }
+    .msg.assistant .msg-head { color: #86efac; }
+
+    .msg-body {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.97rem;
+    }
+
+    .composer {
+      display: flex;
+      gap: 10px;
+      padding: 13px 16px;
+      background: linear-gradient(180deg, rgba(12, 23, 41, 0.96), rgba(11, 20, 32, 0.96));
+      border-top: 1px solid var(--line);
+    }
+
+    .composer input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(17, 29, 47, 0.95);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 0.97rem;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .composer input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+    }
+
+    .send-btn {
+      min-width: 110px;
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      border-color: rgba(147,197,253,0.5);
+      font-weight: 800;
+    }
+
+    .notice {
+      position: fixed;
+      left: 50%;
+      top: 16px;
+      transform: translateX(-50%);
+      z-index: 15;
+      background: #111827;
+      border: 1px solid rgba(239,68,68,0.5);
+      color: #fecaca;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      max-width: min(88vw, 700px);
+      box-shadow: 0 18px 38px rgba(0,0,0,0.38);
+    }
+
+    @media (max-width: 640px) {
+      .app { border: none; }
+      header { padding: 12px 12px; gap: 8px; }
+      .brand { font-size: 0.95rem; }
+      .header-status { display: none; }
+      .toolbar button { padding: 8px 9px; }
+      .messages { padding: 16px 12px; }
+      .msg { max-width: 90%; }
+      .composer { padding: 10px 12px; }
+      .send-btn { min-width: 92px; }
+    }
   </style>
 </head>
 <body>
   <div id="app"></div>
+
   <script>
-  (() => {
-    'use strict';
+    (() => {
+      'use strict';
 
-    // Pollinations is a public, keyless AI gateway. Override it with
-    // window.EDITOR_AI_ENDPOINT before this script if your deployment uses another gateway.
-    const AI_ENDPOINT = window.EDITOR_AI_ENDPOINT || 'https://gen.pollinations.ai/v1/chat/completions';
-    const AI_MODEL = window.EDITOR_AI_MODEL || 'openai';
-    const STORE = 'editor-free-ai-chat-v1';
-    const REQUEST_TIMEOUT = 45000;
-    const state = { lang:'ar', messages:[], busy:false, notice:'' };
-    const $ = (selector, root=document) => root.querySelector(selector);
-    const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const isArabic = () => state.lang === 'ar';
-    const t = (ar, en) => isArabic() ? ar : en;
-    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const DEFAULT_ENDPOINT = 'https://gen.pollinations.ai/v1/chat/completions';
+      const DEFAULT_MODEL = 'openai';
+      const STORE_KEY = 'editor-free-chat-v2';
+      const REQUEST_TIMEOUT = 45000;
 
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORE) || '{}');
-      if (saved.lang === 'ar' || saved.lang === 'en') state.lang = saved.lang;
-      if (Array.isArray(saved.messages)) state.messages = saved.messages.filter(m => m && (m.role === 'user' || m.role === 'assistant')).slice(-40);
-    } catch (_) {}
+      const state = {
+        lang: 'ar',
+        messages: [],
+        busy: false,
+        notice: '',
+      };
 
-    function save() {
-      try { localStorage.setItem(STORE, JSON.stringify({lang:state.lang, messages:state.messages.slice(-40)})); } catch (_) {}
-    }
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const isArabic = () => state.lang === 'ar';
+      const t = (arText, enText) => isArabic() ? arText : enText;
 
-    function showNotice(message, error=false) {
-      state.notice = message;
-      render();
-      window.clearTimeout(showNotice.timer);
-      showNotice.timer = window.setTimeout(() => { state.notice = ''; render(); }, 4500);
-      if (error) console.error(message);
-    }
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>\"']/g, (ch) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '\"': '&quot;',
+        "'": '&#39;'
+      })[ch]);
 
-    async function requestAI(prompt) {
-      const history = state.messages
-        .filter(m => (m.role === 'user' || m.role === 'assistant') && m.content)
-        .slice(-12)
-        .map(m => ({role:m.role, content:m.content}));
-      const response = await fetchWithTimeout(AI_ENDPOINT, {
-        method:'POST',
-        headers:{'Content-Type':'application/json', 'Accept':'application/json'},
-        body:JSON.stringify({
-          model: AI_MODEL,
-          messages:[
-            {role:'system', content:isArabic() ? 'أجب بالعربية مباشرة وبدقة. لا تضف مقدمات تسويقية.' : 'Answer directly and accurately in English. Do not add promotional introductions.'},
-            ...history,
-            {role:'user', content:prompt}
-          ],
-          temperature:0.7,
-          max_tokens:1024,
-          stream:false
-        })
-      }, REQUEST_TIMEOUT);
-      const raw = await response.text();
-      let data;
-      try { data = raw ? JSON.parse(raw) : {}; } catch (_) { throw new Error(t('استجابة غير صالحة من خادم الذكاء الاصطناعي.', 'The AI server returned invalid JSON.')); }
-      if (!response.ok) {
-        const detail = data?.error?.message || data?.message || `${response.status} ${response.statusText}`;
-        throw new Error(`${t('فشل الاتصال بالخادم:', 'AI server request failed:')} ${detail}`);
-      }
-      const answer = data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || data?.response || data?.output_text;
-      if (typeof answer !== 'string' || !answer.trim()) throw new Error(t('لم يُرجع الخادم نصاً.', 'The AI server returned no text.'));
-      return answer.trim();
-    }
-
-    async function fetchWithTimeout(url, options, timeout) {
-      const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), timeout);
-      try { return await fetch(url, {...options, signal:controller.signal}); }
-      catch (error) {
-        if (error?.name === 'AbortError') throw new Error(t('انتهت مهلة الاتصال بالخادم.', 'The AI request timed out.'));
-        throw new Error(t('تعذر الاتصال بخادم الذكاء الاصطناعي. تحقق من الإنترنت أو سياسة CORS.', 'Could not connect to the AI server. Check your internet connection or CORS policy.'));
-      } finally { window.clearTimeout(timer); }
-    }
-
-    async function send() {
-      const input = $('#prompt');
-      const prompt = input?.value.trim();
-      if (!prompt || state.busy) return;
-      state.busy = true;
-      input.value = '';
-      state.messages.push({id:uid(), role:'user', content:prompt});
-      state.messages.push({id:uid(), role:'assistant', content:t('جاري الاتصال بخادم الذكاء الاصطناعي...', 'Connecting to the AI server...')});
-      render();
       try {
-        const answer = await requestAI(prompt);
-        state.messages[state.messages.length - 1].content = answer;
-      } catch (error) {
-        state.messages[state.messages.length - 1].content = t('تعذر الحصول على إجابة.', 'Unable to get an answer.') + '\n\n' + (error?.message || String(error));
-        showNotice(error?.message || String(error), true);
-      } finally {
-        state.busy = false;
-        save();
-        render();
-        $('#prompt')?.focus();
+        const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+        if (saved.lang === 'ar' || saved.lang === 'en') state.lang = saved.lang;
+        if (Array.isArray(saved.messages)) {
+          state.messages = saved.messages.filter((m) => m && m.role && m.content).slice(-40);
+        }
+      } catch (_) {}
+
+      function save() {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify({
+            lang: state.lang,
+            messages: state.messages.slice(-40),
+          }));
+        } catch (_) {}
       }
-    }
 
-    function render() {
-      document.documentElement.lang = state.lang;
-      document.documentElement.dir = isArabic() ? 'rtl' : 'ltr';
-      document.title = t('مختبر EDITOR', 'EDITOR Lab');
-      const messages = state.messages.length
-        ? state.messages.map(m => `<article class="msg ${m.role}"><div class="msg-head">${m.role === 'user' ? t('أنت','You') : t('الذكاء الاصطناعي','AI')}</div><div>${escapeHtml(m.content)}</div></article>`).join('')
-        : `<div class="empty"><h2>${t('مرحباً بك في مختبر EDITOR','Welcome to EDITOR Lab')}</h2><p>${t('محادثة مباشرة مع خادم ذكاء اصطناعي مجاني. اكتب سؤالك وابدأ.','Direct chat with a free AI server. Type a question to begin.')}</p><p class="hint">${t('الخادم المستخدم: Pollinations AI','AI server: Pollinations AI')}<br><span class="key">${escapeHtml(AI_ENDPOINT)}</span></p></div>`;
-      $('#app').innerHTML = `<div class="app"><header><div class="logo">✦</div><div class="brand">${t('مختبر EDITOR','EDITOR Lab')}</div><div class="status">● ${t('متصل بالخادم المجاني','Free server')}</div><div class="toolbar"><button data-action="language">${t('EN / عربي','AR / English')}</button><button data-action="clear" ${state.messages.length ? '' : 'disabled'}>${t('مسح','Clear')}</button></div></header><main class="messages" id="messages">${messages}</main><form class="composer" id="composer"><input id="prompt" autocomplete="off" placeholder="${t('اكتب رسالتك هنا...','Type your message...')}" ${state.busy ? 'disabled' : ''}><button class="send" type="submit" ${state.busy ? 'disabled' : ''}>${state.busy ? '...' : t('إرسال','Send')}</button></form></div>${state.notice ? `<div class="notice error">${escapeHtml(state.notice)}</div>` : ''}`;
-      $('#composer')?.addEventListener('submit', event => { event.preventDefault(); send(); });
-      $('[data-action="language"]')?.addEventListener('click', () => { state.lang = isArabic() ? 'en' : 'ar'; save(); render(); });
-      $('[data-action="clear"]')?.addEventListener('click', () => { if (!state.busy) { state.messages = []; save(); render(); } });
-      const box = $('#messages'); if (box) box.scrollTop = box.scrollHeight;
-    }
+      function showNotice(message, isError = false) {
+        state.notice = message;
+        render();
+        window.clearTimeout(showNotice.timer);
+        showNotice.timer = window.setTimeout(() => {
+          state.notice = '';
+          render();
+        }, isError ? 5000 : 3200);
+      }
 
-    render();
-  })();
+      async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT) {
+        const controller = new AbortController();
+        const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+
+        try {
+          return await fetch(url, { ...options, signal: controller.signal });
+        } catch (error) {
+          if (error && error.name === 'AbortError') {
+            throw new Error(t('انتهت مهلة الاتصال بالخادم.', 'The AI request timed out.'));
+          }
+          throw new Error(t('تعذر الاتصال بخادم الذكاء الاصطناعي. تحقق من الإنترنت أو سياسة CORS.', 'Could not connect to the AI server. Check your internet connection or CORS policy.'));
+        } finally {
+          window.clearTimeout(timer);
+        }
+      }
+
+      async function extractAIResponse(rawText, status) {
+        if (!rawText || !rawText.trim()) {
+          throw new Error(t('لم يُرجع الخادم نصاً.', 'The server returned no text.'));
+        }
+
+        let parsed = null;
+        try {
+          parsed = JSON.parse(rawText);
+        } catch (_) {
+          if (rawText.trim().startsWith('{') || rawText.trim().startsWith('[')) {
+            throw new Error(t('استجابة غير صالحة من الخادم.', 'The server returned an invalid response.'));
+          }
+          return rawText.trim();
+        }
+
+        const answer = parsed?.choices?.[0]?.message?.content
+          || parsed?.choices?.[0]?.text
+          || parsed?.response
+          || parsed?.output_text
+          || parsed?.message?.content
+          || (typeof parsed === 'string' ? parsed : '');
+
+        if (typeof answer === 'string' && answer.trim()) {
+          return answer.trim();
+        }
+
+        if (parsed && typeof parsed === 'object' && parsed.error) {
+          const msg = parsed.error?.message || parsed.error || t('خطأ في خادم الذكاء الاصطناعي.', 'AI server error.');
+          throw new Error(msg);
+        }
+
+        if (!status || status < 200 || status >= 300) {
+          throw new Error(t('فشل الاتصال بالخادم.', 'AI server request failed.'));
+        }
+
+        throw new Error(t('لم يتمكن الخادم من إرجاع نص مناسب.', 'The server did not return a usable response.'));
+      }
+
+      async function requestAI(prompt) {
+        const endpoint = window.EDITOR_AI_ENDPOINT || DEFAULT_ENDPOINT;
+        const model = window.EDITOR_AI_MODEL || DEFAULT_MODEL;
+
+        const messageHistory = state.messages
+          .filter((m) => m && typeof m.content === 'string' && (m.role === 'user' || m.role === 'assistant'))
+          .slice(-12)
+          .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+
+        const payload = {
+          model,
+          messages: [
+            {
+              role: 'system',
+              content: isArabic()
+                ? 'أجب مباشرة وبدقة بالعربية. لا تضف ترحيباً أو مقدمة تسويقية. اجعل الإجابة مختصرة ومفيدة.'
+                : 'Answer directly and accurately in English. No promotional intro. Keep it concise and useful.',
+            },
+            ...messageHistory,
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0.7,
+          max_tokens: 1200,
+          stream: false,
+        };
+
+        const response = await fetchWithTimeout(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }, REQUEST_TIMEOUT);
+
+        const rawText = await response.text();
+        if (!response.ok) {
+          const text = rawText || '';
+          let detail = `${response.status} ${response.statusText}`;
+          try {
+            const parsed = JSON.parse(text);
+            detail = parsed?.error?.message || parsed?.message || detail;
+          } catch (_) {}
+          throw new Error(`${t('فشل الاتصال بالخادم:', 'AI server request failed:')} ${detail}`);
+        }
+
+        return await extractAIResponse(rawText, response.status);
+      }
+
+      async function send() {
+        const input = $('#prompt');
+        const prompt = input?.value.trim();
+        if (!prompt || state.busy) return;
+
+        state.busy = true;
+        input.value = '';
+
+        state.messages.push({
+          id: uid(),
+          role: 'user',
+          content: prompt,
+        });
+
+        state.messages.push({
+          id: uid(),
+          role: 'assistant',
+          content: t('جاري الاتصال بخادم الذكاء الاصطناعي...', 'Connecting to the AI server...'),
+        });
+
+        render();
+
+        try {
+          const answer = await requestAI(prompt);
+          state.messages[state.messages.length - 1].content = answer;
+        } catch (error) {
+          state.messages[state.messages.length - 1].content = t(
+            'تعذر الحصول على إجابة من خادم الذكاء الاصطناعي. حاول مرة أخرى.',
+            'Unable to get an answer from the AI server. Please try again.'
+          ) + '\n\n' + (error?.message || String(error));
+          showNotice(error?.message || String(error), true);
+        } finally {
+          state.busy = false;
+          save();
+          render();
+          $('#prompt')?.focus();
+        }
+      }
+
+      function render() {
+        document.documentElement.lang = state.lang;
+        document.documentElement.dir = isArabic() ? 'rtl' : 'ltr';
+        document.title = t('مختبر EDITOR', 'EDITOR Lab');
+
+        const list = state.messages.length
+          ? state.messages.map((msg) => {
+              const label = msg.role === 'user' ? t('أنت', 'You') : t('الذكاء الاصطناعي', 'AI');
+              const body = escapeHtml(msg.content).replace(/\n/g, '<br>');
+              return `
+                <article class="msg ${msg.role}">
+                  <div class="msg-head">${label}</div>
+                  <div class="msg-body">${body}</div>
+                </article>
+              `;
+            }).join('')
+          : `
+            <div class="empty">
+              <h2>${t('مرحباً بك في مختبر EDITOR', 'Welcome to EDITOR Lab')}</h2>
+              <p>${t('تحدث مباشرة مع خادم ذكاء اصطناعي مجاني ومباشر.', 'Chat directly with a free public AI server.')}</p>
+              <p class="hint">${t('الخادم الحالي: Pollinations AI', 'Current server: Pollinations AI')}<br><span class="key">${escapeHtml(window.EDITOR_AI_ENDPOINT || DEFAULT_ENDPOINT)}</span></p>
+            </div>
+          `;
+
+        $('#app').innerHTML = `
+          <div class="app">
+            <header>
+              <div class="logo">✦</div>
+              <div class="brand">${t('مختبر EDITOR', 'EDITOR Lab')}</div>
+              <div class="header-status">● ${t('خادم مجاني', 'Free server')}</div>
+              <div class="toolbar">
+                <button type="button" data-action="language">${t('EN / عربي', 'AR / English')}</button>
+                <button type="button" data-action="clear" ${state.messages.length ? '' : 'disabled'}>${t('مسح', 'Clear')}</button>
+              </div>
+            </header>
+
+            <main class="messages" id="messages">${list}</main>
+
+            <form class="composer" id="composer">
+              <input id="prompt" type="text" autocomplete="off" value="" placeholder="${t('اكتب رسالتك هنا...', 'Type your message...')}" ${state.busy ? 'disabled' : ''}>
+              <button class="send-btn" type="submit" ${state.busy ? 'disabled' : ''}>${state.busy ? '...' : t('إرسال', 'Send')}</button>
+            </form>
+          </div>
+          ${state.notice ? `<div class="notice">${escapeHtml(state.notice)}</div>` : ''}
+        `;
+
+        const form = $('#composer');
+        form?.addEventListener('submit', (event) => {
+          event.preventDefault();
+          send();
+        });
+
+        $('[data-action="language"]')?.addEventListener('click', () => {
+          state.lang = isArabic() ? 'en' : 'ar';
+          save();
+          render();
+        });
+
+        $('[data-action="clear"]')?.addEventListener('click', () => {
+          if (state.busy) return;
+          state.messages = [];
+          save();
+          render();
+        });
+
+        const box = $('#messages');
+        if (box) box.scrollTop = box.scrollHeight;
+      }
+
+      render();
+    })();
   </script>
 </body>
 </html>
