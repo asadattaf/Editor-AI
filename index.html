@@ -1,22 +1,111 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>مختبر EDITOR</title>
-    <meta name="description" content="منصة وتطبيق مختبر EDITOR مع استوديو الأكواد وبناء تطبيقات APK والصوت والترجمة ومشاركة الملفات" />
-    <meta property="og:title" content="مختبر EDITOR" />
-    <meta property="og:description" content="منصة وتطبيق مختبر EDITOR مع استوديو الأكواد وبناء تطبيقات APK والصوت والترجمة ومشاركة الملفات" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
-  </head>
-  <body class="bg-[#090d16] text-[#f8fafc] min-h-screen antialiased">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مختبر EDITOR — دردشة الذكاء الاصطناعي</title>
+  <meta name="description" content="دردشة ذكاء اصطناعي عربية وإنجليزية مع دعم الملفات والصوت">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --bg:#090d16; --panel:#111c2e; --panel2:#16233a; --border:#293a55; --blue:#2563eb; --muted:#94a3b8; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; font-family:Cairo,system-ui,sans-serif; background:var(--bg); color:#f8fafc; }
+    body { min-height:100vh; }
+    button,input,textarea { font:inherit; }
+    button { cursor:pointer; }
+    .app { width:min(1100px,100%); height:100vh; height:100dvh; margin:auto; display:flex; flex-direction:column; background:var(--panel); }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; background:#0b1424; border-bottom:1px solid var(--border); }
+    .brand { display:flex; align-items:center; gap:12px; min-width:0; }
+    .logo { width:42px; height:42px; display:grid; place-items:center; border-radius:13px; color:#08101d; font-weight:800; background:linear-gradient(145deg,#fff,#cbd5e1 50%,#64748b); box-shadow:0 5px 15px #0008; }
+    h1 { font-size:16px; margin:0; } .subtitle { color:var(--muted); font-size:11px; }
+    .actions { display:flex; gap:7px; align-items:center; }
+    .btn { border:1px solid var(--border); background:var(--panel2); color:#e2e8f0; border-radius:10px; padding:8px 11px; font-size:12px; }
+    .btn:hover { border-color:#60a5fa; background:#1e3350; } .btn.primary { background:var(--blue); border-color:#3b82f6; color:#fff; }
+    #messages { flex:1; overflow:auto; padding:22px; display:flex; flex-direction:column; gap:14px; }
+    .welcome { margin:auto; text-align:center; max-width:580px; color:var(--muted); }
+    .welcome h2 { color:#fff; font-size:22px; margin:0 0 8px; } .welcome p { font-size:13px; line-height:1.8; }
+    .message { max-width:82%; display:flex; flex-direction:column; gap:5px; }
+    .message.user { align-self:flex-end; align-items:flex-end; } .message.assistant { align-self:flex-start; align-items:flex-start; }
+    .bubble { white-space:pre-wrap; line-height:1.8; padding:12px 15px; border-radius:16px; font-size:14px; overflow-wrap:anywhere; }
+    .user .bubble { background:var(--blue); border-top-right-radius:4px; } .assistant .bubble { background:#1e293b; border:1px solid var(--border); border-top-left-radius:4px; }
+    .meta { color:var(--muted); font-size:10px; }
+    .typing { display:flex; gap:5px; padding:7px 2px; } .typing i { width:7px; height:7px; border-radius:50%; background:#60a5fa; animation:b 1s infinite alternate; } .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}@keyframes b{to{opacity:.2;transform:translateY(-3px)}}
+    .attachments { display:flex; flex-wrap:wrap; gap:7px; padding:10px 20px 0; }
+    .file { border:1px solid var(--border); background:#0d1728; color:#cbd5e1; border-radius:9px; padding:5px 9px; font-size:11px; }
+    .composer { padding:12px 20px 16px; background:#0b1424; border-top:1px solid var(--border); }
+    .composer-row { display:flex; gap:8px; align-items:flex-end; } textarea { flex:1; min-height:46px; max-height:150px; resize:vertical; border:1px solid var(--border); background:var(--panel2); color:#fff; border-radius:12px; padding:11px 13px; outline:none; } textarea:focus { border-color:#3b82f6; }
+    .status { color:var(--muted); font-size:10px; margin-top:7px; min-height:15px; } .error { color:#fda4af; }
+    @media(max-width:600px){ header{padding:11px 12px}.actions .label{display:none} #messages{padding:14px}.composer{padding:10px 12px 12px}.message{max-width:94%} }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand"><div class="logo">AI</div><div><h1 id="title">مختبر EDITOR</h1><div class="subtitle" id="subtitle">دردشة الذكاء الاصطناعي</div></div></div>
+      <div class="actions"><button class="btn" id="langBtn">EN</button><button class="btn" id="clearBtn">مسح</button></div>
+    </header>
+    <section id="messages" aria-live="polite"><div class="welcome" id="welcome"><h2>مرحباً بك في مختبر EDITOR</h2><p>اكتب سؤالك أو أرفق ملفاً لبدء محادثة مباشرة مع الذكاء الاصطناعي.</p></div></section>
+    <div class="attachments" id="attachments"></div>
+    <footer class="composer">
+      <div class="composer-row">
+        <input id="fileInput" type="file" multiple hidden>
+        <button class="btn" id="attachBtn" title="إرفاق ملفات">📎</button>
+        <textarea id="input" rows="1" placeholder="اكتب رسالتك هنا..."></textarea>
+        <button class="btn primary" id="sendBtn">إرسال</button>
+      </div>
+      <div class="status" id="status">متصل — تأكد من تشغيل الخادم وإضافة GEMINI_API_KEY في ملف .env</div>
+    </footer>
+  </main>
+  <script>
+    const state = { language: 'ar', messages: [], files: [], busy: false };
+    const $ = (id) => document.getElementById(id);
+    const ui = { messages:$('messages'), input:$('input'), send:$('sendBtn'), status:$('status'), files:$('attachments'), welcome:$('welcome') };
+    try { state.messages = JSON.parse(localStorage.getItem('editor_chat') || '[]'); } catch (_) { state.messages = []; }
+
+    function render() {
+      ui.messages.innerHTML = '';
+      if (!state.messages.length) ui.messages.appendChild(ui.welcome);
+      state.messages.forEach(m => {
+        const wrap = document.createElement('div'); wrap.className = 'message ' + m.role;
+        const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.textContent = m.content;
+        wrap.appendChild(bubble); ui.messages.appendChild(wrap);
+      });
+      ui.messages.scrollTop = ui.messages.scrollHeight;
+      localStorage.setItem('editor_chat', JSON.stringify(state.messages.slice(-50)));
+    }
+    function renderFiles() { ui.files.innerHTML = state.files.map((f,i) => `<span class="file">${escapeHtml(f.name)} <button onclick="removeFile(${i})" aria-label="حذف">×</button></span>`).join(''); }
+    function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    window.removeFile = (i) => { state.files.splice(i,1); renderFiles(); };
+    function setBusy(v) { state.busy=v; ui.send.disabled=v; ui.input.disabled=v; ui.status.textContent=v ? (state.language==='ar'?'جاري التفكير والرد...':'Thinking and responding...') : (state.language==='ar'?'متصل — جاهز للمحادثة':'Connected — ready to chat'); }
+
+    async function send() {
+      const text = ui.input.value.trim();
+      if ((!text && !state.files.length) || state.busy) return;
+      const files = state.files.map(f => ({ name:f.name, size:f.size, sizeFormatted:formatSize(f.size), type:f.type || 'file', textSnippet:f.textSnippet }));
+      const prompt = text || (state.language==='ar' ? `[تم إرفاق ${files.length} ملف]` : `[${files.length} file(s) attached]`);
+      state.messages.push({ role:'user', content:prompt }); ui.input.value=''; state.files=[]; renderFiles(); render(); setBusy(true);
+      const typing = document.createElement('div'); typing.className='message assistant'; typing.innerHTML='<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>'; ui.messages.appendChild(typing); ui.messages.scrollTop=ui.messages.scrollHeight;
+      try {
+        const response = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ messages:state.messages, language:state.language, attachedFiles:files }) });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        const answer = data.choices?.[0]?.message?.content || data.response || (state.language==='ar'?'لم يصل رد من الخادم.':'No response received from the server.');
+        typing.remove(); state.messages.push({ role:'assistant', content:answer }); render();
+      } catch (err) {
+        typing.remove(); const msg = state.language==='ar' ? 'تعذر الاتصال بالخادم. شغّل npm run dev وتأكد من إعداد GEMINI_API_KEY.' : 'Could not connect to the server. Run npm run dev and configure GEMINI_API_KEY.';
+        state.messages.push({ role:'assistant', content:msg }); ui.status.textContent=String(err); ui.status.className='status error'; render();
+      } finally { setBusy(false); }
+    }
+    function formatSize(n) { return n < 1024 ? n+' B' : n < 1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(1)+' MB'; }
+
+    $('attachBtn').onclick=()=>$('fileInput').click();
+    $('fileInput').onchange=async (e)=> { for (const file of [...e.target.files].slice(0,100-state.files.length)) { const f={name:file.name,size:file.size,type:file.type}; if(file.size<2*1024*1024) try{f.textSnippet=await file.text();}catch(_){} state.files.push(f); } renderFiles(); e.target.value=''; };
+    ui.send.onclick=send; ui.input.onkeydown=e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} };
+    $('clearBtn').onclick=()=>{ if(!state.busy){state.messages=[];render();} };
+    $('langBtn').onclick=()=>{ state.language=state.language==='ar'?'en':'ar'; document.documentElement.lang=state.language; document.documentElement.dir=state.language==='ar'?'rtl':'ltr'; $('langBtn').textContent=state.language==='ar'?'EN':'AR'; $('title').textContent=state.language==='ar'?'مختبر EDITOR':'EDITOR Lab'; $('subtitle').textContent=state.language==='ar'?'دردشة الذكاء الاصطناعي':'AI Chat'; ui.input.placeholder=state.language==='ar'?'اكتب رسالتك هنا...':'Write your message here...'; $('clearBtn').textContent=state.language==='ar'?'مسح':'Clear'; ui.send.textContent=state.language==='ar'?'إرسال':'Send'; render(); };
+    render();
+  </script>
+</body>
 </html>
