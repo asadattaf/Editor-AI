@@ -31,9 +31,7 @@
       overflow: hidden;
     }
 
-    button, input {
-      font: inherit;
-    }
+    button, input, textarea { font: inherit; }
 
     .app {
       height: 100%;
@@ -201,333 +199,312 @@
     .composer {
       display: flex;
       gap: 10px;
-      padding: 13px 16px;
-      background: linear-gradient(180deg, rgba(12, 23, 41, 0.96), rgba(11, 20, 32, 0.96));
+      padding: 14px 18px 18px;
       border-top: 1px solid var(--line);
+      background: rgba(9, 15, 24, 0.9);
     }
 
-    .composer input {
+    .composer textarea {
       flex: 1;
-      min-width: 0;
+      min-height: 52px;
+      max-height: 180px;
+      resize: vertical;
+      background: #101c2e;
+      color: var(--text);
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(17, 29, 47, 0.95);
-      color: var(--text);
       padding: 12px 14px;
-      font-size: 0.97rem;
       outline: none;
-      transition: border-color .15s ease, box-shadow .15s ease;
     }
 
-    .composer input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+    .composer textarea:focus {
+      border-color: rgba(59,130,246,0.8);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
     }
 
     .send-btn {
       min-width: 110px;
-      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-      border-color: rgba(147,197,253,0.5);
-      font-weight: 800;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%) !important;
+      border-color: rgba(96,165,250,0.7) !important;
+      color: #eff6ff !important;
     }
 
-    .notice {
+    .toast {
       position: fixed;
       left: 50%;
-      top: 16px;
+      bottom: 22px;
       transform: translateX(-50%);
-      z-index: 15;
-      background: #111827;
-      border: 1px solid rgba(239,68,68,0.5);
-      color: #fecaca;
+      background: rgba(15,23,42,0.95);
+      color: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
       padding: 10px 14px;
-      border-radius: 12px;
       font-size: 12px;
-      max-width: min(88vw, 700px);
-      box-shadow: 0 18px 38px rgba(0,0,0,0.38);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.28);
+      z-index: 999;
     }
 
-    @media (max-width: 640px) {
-      .app { border: none; }
-      header { padding: 12px 12px; gap: 8px; }
-      .brand { font-size: 0.95rem; }
-      .header-status { display: none; }
-      .toolbar button { padding: 8px 9px; }
-      .messages { padding: 16px 12px; }
-      .msg { max-width: 90%; }
-      .composer { padding: 10px 12px; }
-      .send-btn { min-width: 92px; }
+    @media (max-width: 700px) {
+      .app { max-width: 100%; }
+      .msg { max-width: 92%; }
+      .toolbar { gap: 6px; }
+      .toolbar button { padding: 8px 9px; font-size: 12px; }
+      .composer { flex-direction: column; }
+      .send-btn { min-width: 100%; }
     }
   </style>
 </head>
 <body>
   <div id="app"></div>
 
-  <script>
+  <script type="module">
     (() => {
       'use strict';
 
-      const DEFAULT_ENDPOINT = 'https://gen.pollinations.ai/v1/chat/completions';
-      const DEFAULT_MODEL = 'openai';
-      const STORE_KEY = 'editor-free-chat-v2';
-      const REQUEST_TIMEOUT = 45000;
+      const STORE_KEY = 'editor-direct-ai-v2';
+      const AI_URL = 'https://gen.pollinations.ai/v1/chat/completions';
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
       const state = {
         lang: 'ar',
         messages: [],
         busy: false,
-        notice: '',
+        provider: 'idle',
+        lastError: ''
       };
 
-      const $ = (selector, root = document) => root.querySelector(selector);
-      const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      const isArabic = () => state.lang === 'ar';
-      const t = (arText, enText) => isArabic() ? arText : enText;
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+        if (saved && Array.isArray(saved.messages)) state.messages = saved.messages.slice(-50);
+        if (saved && ['ar', 'en'].includes(saved.lang)) state.lang = saved.lang;
+      } catch (_) {}
+
+      const ar = () => state.lang === 'ar';
+      const t = (arText, enText) => ar() ? arText : enText;
+
+      const save = () => {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify({ lang: state.lang, messages: state.messages.slice(-50) }));
+        } catch (_) {}
+      };
 
       const escapeHtml = (value) => String(value ?? '').replace(/[&<>\"']/g, (ch) => ({
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
-        '\"': '&quot;',
+        '"': '&quot;',
         "'": '&#39;'
-      })[ch]);
+      }[ch]));
 
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
-        if (saved.lang === 'ar' || saved.lang === 'en') state.lang = saved.lang;
-        if (Array.isArray(saved.messages)) {
-          state.messages = saved.messages.filter((m) => m && m.role && m.content).slice(-40);
-        }
-      } catch (_) {}
-
-      function save() {
-        try {
-          localStorage.setItem(STORE_KEY, JSON.stringify({
-            lang: state.lang,
-            messages: state.messages.slice(-40),
-          }));
-        } catch (_) {}
-      }
-
-      function showNotice(message, isError = false) {
-        state.notice = message;
-        render();
-        window.clearTimeout(showNotice.timer);
-        showNotice.timer = window.setTimeout(() => {
-          state.notice = '';
-          render();
-        }, isError ? 5000 : 3200);
-      }
-
-      async function fetchWithTimeout(url, options = {}, timeoutMs = REQUEST_TIMEOUT) {
-        const controller = new AbortController();
-        const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-
-        try {
-          return await fetch(url, { ...options, signal: controller.signal });
-        } catch (error) {
-          if (error && error.name === 'AbortError') {
-            throw new Error(t('انتهت مهلة الاتصال بالخادم.', 'The AI request timed out.'));
-          }
-          throw new Error(t('تعذر الاتصال بخادم الذكاء الاصطناعي. تحقق من الإنترنت أو سياسة CORS.', 'Could not connect to the AI server. Check your internet connection or CORS policy.'));
-        } finally {
-          window.clearTimeout(timer);
-        }
-      }
-
-      async function extractAIResponse(rawText, status) {
-        if (!rawText || !rawText.trim()) {
-          throw new Error(t('لم يُرجع الخادم نصاً.', 'The server returned no text.'));
-        }
-
-        let parsed = null;
-        try {
-          parsed = JSON.parse(rawText);
-        } catch (_) {
-          if (rawText.trim().startsWith('{') || rawText.trim().startsWith('[')) {
-            throw new Error(t('استجابة غير صالحة من الخادم.', 'The server returned an invalid response.'));
-          }
-          return rawText.trim();
-        }
-
-        const answer = parsed?.choices?.[0]?.message?.content
-          || parsed?.choices?.[0]?.text
-          || parsed?.response
-          || parsed?.output_text
-          || parsed?.message?.content
-          || (typeof parsed === 'string' ? parsed : '');
-
-        if (typeof answer === 'string' && answer.trim()) {
-          return answer.trim();
-        }
-
-        if (parsed && typeof parsed === 'object' && parsed.error) {
-          const msg = parsed.error?.message || parsed.error || t('خطأ في خادم الذكاء الاصطناعي.', 'AI server error.');
-          throw new Error(msg);
-        }
-
-        if (!status || status < 200 || status >= 300) {
-          throw new Error(t('فشل الاتصال بالخادم.', 'AI server request failed.'));
-        }
-
-        throw new Error(t('لم يتمكن الخادم من إرجاع نص مناسب.', 'The server did not return a usable response.'));
-      }
-
-      async function requestAI(prompt) {
-        const endpoint = window.EDITOR_AI_ENDPOINT || DEFAULT_ENDPOINT;
-        const model = window.EDITOR_AI_MODEL || DEFAULT_MODEL;
-
-        const messageHistory = state.messages
-          .filter((m) => m && typeof m.content === 'string' && (m.role === 'user' || m.role === 'assistant'))
-          .slice(-12)
-          .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
-
-        const payload = {
-          model,
-          messages: [
-            {
-              role: 'system',
-              content: isArabic()
-                ? 'أجب مباشرة وبدقة بالعربية. لا تضف ترحيباً أو مقدمة تسويقية. اجعل الإجابة مختصرة ومفيدة.'
-                : 'Answer directly and accurately in English. No promotional intro. Keep it concise and useful.',
-            },
-            ...messageHistory,
-            { role: 'user', content: prompt },
-          ],
-          temperature: 0.7,
-          max_tokens: 1200,
-          stream: false,
-        };
-
-        const response = await fetchWithTimeout(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        }, REQUEST_TIMEOUT);
-
-        const rawText = await response.text();
-        if (!response.ok) {
-          const text = rawText || '';
-          let detail = `${response.status} ${response.statusText}`;
-          try {
-            const parsed = JSON.parse(text);
-            detail = parsed?.error?.message || parsed?.message || detail;
-          } catch (_) {}
-          throw new Error(`${t('فشل الاتصال بالخادم:', 'AI server request failed:')} ${detail}`);
-        }
-
-        return await extractAIResponse(rawText, response.status);
-      }
-
-      async function send() {
-        const input = $('#prompt');
-        const prompt = input?.value.trim();
-        if (!prompt || state.busy) return;
-
-        state.busy = true;
-        input.value = '';
-
-        state.messages.push({
-          id: uid(),
-          role: 'user',
-          content: prompt,
-        });
-
-        state.messages.push({
-          id: uid(),
-          role: 'assistant',
-          content: t('جاري الاتصال بخادم الذكاء الاصطناعي...', 'Connecting to the AI server...'),
-        });
-
-        render();
-
-        try {
-          const answer = await requestAI(prompt);
-          state.messages[state.messages.length - 1].content = answer;
-        } catch (error) {
-          state.messages[state.messages.length - 1].content = t(
-            'تعذر الحصول على إجابة من خادم الذكاء الاصطناعي. حاول مرة أخرى.',
-            'Unable to get an answer from the AI server. Please try again.'
-          ) + '\n\n' + (error?.message || String(error));
-          showNotice(error?.message || String(error), true);
-        } finally {
-          state.busy = false;
-          save();
-          render();
-          $('#prompt')?.focus();
-        }
-      }
+      const toast = (text) => {
+        document.querySelector('.toast')?.remove();
+        const node = document.createElement('div');
+        node.className = 'toast';
+        node.textContent = text;
+        document.body.appendChild(node);
+        setTimeout(() => node.remove(), 2600);
+      };
 
       function render() {
-        document.documentElement.lang = state.lang;
-        document.documentElement.dir = isArabic() ? 'rtl' : 'ltr';
-        document.title = t('مختبر EDITOR', 'EDITOR Lab');
-
-        const list = state.messages.length
-          ? state.messages.map((msg) => {
-              const label = msg.role === 'user' ? t('أنت', 'You') : t('الذكاء الاصطناعي', 'AI');
-              const body = escapeHtml(msg.content).replace(/\n/g, '<br>');
-              return `
-                <article class="msg ${msg.role}">
-                  <div class="msg-head">${label}</div>
-                  <div class="msg-body">${body}</div>
-                </article>
-              `;
-            }).join('')
+        const messagesHtml = state.messages.length
+          ? state.messages.map((msg) => `
+            <article class="msg ${msg.role}">
+              <div class="msg-head">${msg.role === 'user' ? t('أنت', 'You') : t('الذكاء الاصطناعي', 'AI')}</div>
+              <div class="msg-body">${escapeHtml(msg.content).replace(/\n/g, '<br>')}</div>
+            </article>
+          `).join('')
           : `
             <div class="empty">
               <h2>${t('مرحباً بك في مختبر EDITOR', 'Welcome to EDITOR Lab')}</h2>
-              <p>${t('تحدث مباشرة مع خادم ذكاء اصطناعي مجاني ومباشر.', 'Chat directly with a free public AI server.')}</p>
-              <p class="hint">${t('الخادم الحالي: Pollinations AI', 'Current server: Pollinations AI')}<br><span class="key">${escapeHtml(window.EDITOR_AI_ENDPOINT || DEFAULT_ENDPOINT)}</span></p>
+              <p>${t('تحدث مع الذكاء الاصطناعي المجاني مباشرةً من المتصفح.', 'Chat with the free AI directly from the browser.')}</p>
+              <div class="hint">${t('المحرك الحالي: Pollinations AI', 'Current engine: Pollinations AI')}</div>
+              <div class="key">${t('التجربة سريعة، وآمنة، ودون تسجيل.', 'Fast, private and no signup required.')}</div>
             </div>
           `;
 
-        $('#app').innerHTML = `
+        const statusText = state.provider === 'pollinations'
+          ? t('متصل', 'Connected')
+          : (state.busy ? t('جاري التفكير...', 'Thinking...') : t('جاهز', 'Ready'));
+
+        const template = `
           <div class="app">
             <header>
               <div class="logo">✦</div>
               <div class="brand">${t('مختبر EDITOR', 'EDITOR Lab')}</div>
-              <div class="header-status">● ${t('خادم مجاني', 'Free server')}</div>
               <div class="toolbar">
                 <button type="button" data-action="language">${t('EN / عربي', 'AR / English')}</button>
-                <button type="button" data-action="clear" ${state.messages.length ? '' : 'disabled'}>${t('مسح', 'Clear')}</button>
+                <button type="button" data-action="clear">${t('مسح', 'Clear')}</button>
+                <button type="button" data-action="export">${t('تصدير', 'Export')}</button>
               </div>
+              <div class="header-status">● ${statusText}</div>
             </header>
 
-            <main class="messages" id="messages">${list}</main>
+            <div id="messages" class="messages">${messagesHtml}</div>
 
-            <form class="composer" id="composer">
-              <input id="prompt" type="text" autocomplete="off" value="" placeholder="${t('اكتب رسالتك هنا...', 'Type your message...')}" ${state.busy ? 'disabled' : ''}>
-              <button class="send-btn" type="submit" ${state.busy ? 'disabled' : ''}>${state.busy ? '...' : t('إرسال', 'Send')}</button>
-            </form>
+            <div class="composer">
+              <textarea id="prompt" rows="1" placeholder="${t('اكتب رسالتك...', 'Type your message...')}"></textarea>
+              <button type="button" class="send-btn" data-action="send" ${state.busy ? 'disabled' : ''}>${t('إرسال', 'Send')}</button>
+            </div>
           </div>
-          ${state.notice ? `<div class="notice">${escapeHtml(state.notice)}</div>` : ''}
         `;
 
-        const form = $('#composer');
-        form?.addEventListener('submit', (event) => {
-          event.preventDefault();
-          send();
+        $('#app').innerHTML = template;
+        bind();
+
+        const msgBox = $('#messages');
+        if (msgBox) msgBox.scrollTop = msgBox.scrollHeight;
+      }
+
+      function bind() {
+        const sendBtn = document.querySelector('[data-action="send"]');
+        const promptEl = $('#prompt');
+
+        document.querySelectorAll('[data-action]').forEach((btn) => {
+          btn.onclick = async () => {
+            const action = btn.dataset.action;
+            if (action === 'language') {
+              state.lang = ar() ? 'en' : 'ar';
+              save();
+              render();
+              return;
+            }
+            if (action === 'clear') {
+              state.messages = [];
+              save();
+              render();
+              return;
+            }
+            if (action === 'export') {
+              const text = state.messages.map((m) => `${m.role}: ${m.content}`).join('\n\n');
+              const blob = new Blob([text || t('لا توجد رسائل.', 'No messages yet.')], { type: 'text/plain;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `editor-chat-${Date.now()}.txt`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              toast(t('تم تصدير المحادثة.', 'Chat exported.'));
+              return;
+            }
+            if (action === 'send') {
+              await send();
+            }
+          };
         });
 
-        $('[data-action="language"]')?.addEventListener('click', () => {
-          state.lang = isArabic() ? 'en' : 'ar';
+        if (promptEl) {
+          promptEl.onkeydown = (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
+              send();
+            }
+          };
+        }
+
+        if (sendBtn) {
+          sendBtn.onclick = async () => send();
+        }
+      }
+
+      async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          const res = await fetch(url, {
+            ...options,
+            signal: controller.signal,
+            headers: {
+              Accept: 'application/json',
+              ...(options.headers || {})
+            }
+          });
+
+          const text = await res.text();
+          if (!res.ok) {
+            let info = text || `HTTP ${res.status}`;
+            throw new Error(info.slice(0, 240));
+          }
+
+          try {
+            return JSON.parse(text);
+          } catch (_err) {
+            return { raw: text };
+          }
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      async function askFreeAI(prompt) {
+        const history = state.messages.slice(-10).map((msg) => ({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        }));
+
+        const systemText = ar()
+          ? 'أنت مساعد عربي مختصر ودقيق. أجب مباشرة فقط وبأسلوب واضح وبعكس الدقة. لا تذكر أنك نموذج أو تعطي مقدمات ترويجية.'
+          : 'You are a direct, helpful, and concise assistant. Reply clearly and accurately without promotional preambles or self-introduction.';
+
+        const payload = {
+          model: 'gemini-3.5-flash',
+          messages: [
+            { role: 'system', content: systemText },
+            ...history,
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 768
+        };
+
+        const data = await fetchWithTimeout(AI_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }, 25000);
+
+        const answer = data?.choices?.[0]?.message?.content || data?.output || data?.response || data?.raw;
+        const text = typeof answer === 'string' ? answer.trim() : '';
+
+        if (!text) {
+          throw new Error(t('لم يتم الحصول على رد صحيح من الخادم.', 'The server returned an invalid response.'));
+        }
+
+        state.provider = 'pollinations';
+        return text;
+      }
+
+      async function send() {
+        const input = $('#prompt');
+        const prompt = (input?.value || '').trim();
+
+        if (!prompt || state.busy) return;
+
+        state.busy = true;
+        state.lastError = '';
+        state.messages.push({ id: uid(), role: 'user', content: prompt });
+        state.messages.push({ id: uid(), role: 'assistant', content: t('جاري التفكير...', 'Thinking...') });
+        save();
+        render();
+
+        try {
+          const answer = await askFreeAI(prompt);
+          state.messages[state.messages.length - 1].content = answer;
+        } catch (error) {
+          const msg = error?.message || String(error || 'Unknown error');
+          state.lastError = msg;
+          state.messages[state.messages.length - 1].content = t(
+            `تعذّر الاتصال بالخادم المجاني.\n\n${msg}`,
+            `The free AI server is unavailable.\n\n${msg}`
+          );
+          toast(t('فشل الاتصال بالسيرفر المجاني.', 'Free AI server connection failed.'));
+        } finally {
+          state.busy = false;
           save();
           render();
-        });
-
-        $('[data-action="clear"]')?.addEventListener('click', () => {
-          if (state.busy) return;
-          state.messages = [];
-          save();
-          render();
-        });
-
-        const box = $('#messages');
-        if (box) box.scrollTop = box.scrollHeight;
+        }
       }
 
       render();
