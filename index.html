@@ -1,275 +1,64 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A simple to-do list application with local storage persistence." />
-  <title>To-Do List</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="EDITOR Lab - standalone AI workspace, code studio and Android project generator">
+  <title>مختبر EDITOR</title>
   <style>
-    :root {
-      color-scheme: light;
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --danger: #dc2626;
-      --shadow: 0 18px 45px rgba(30, 41, 59, .12);
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: linear-gradient(135deg, #eef2ff, var(--bg));
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .app { width: min(100%, 720px); }
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(229, 231, 235, .9);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    header { padding: 30px 30px 22px; border-bottom: 1px solid var(--border); }
-    h1 { margin: 0 0 6px; font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -.04em; }
-    .subtitle { margin: 0; color: var(--muted); }
-
-    .content { padding: 22px 30px 30px; }
-    .add-form { display: flex; gap: 10px; margin-bottom: 18px; }
-    input, button { font: inherit; }
-    input[type="text"] {
-      flex: 1;
-      min-width: 0;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    input[type="text"]:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, .14);
-    }
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 16px;
-      cursor: pointer;
-      transition: background .2s, transform .15s, opacity .2s;
-    }
-    button:active { transform: translateY(1px); }
-    button:disabled { cursor: not-allowed; opacity: .5; }
-    .primary { background: var(--primary); color: white; font-weight: 700; }
-    .primary:hover { background: var(--primary-dark); }
-
-    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .filters { display: flex; gap: 6px; }
-    .filter {
-      padding: 7px 11px;
-      background: transparent;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-    .filter:hover, .filter.active { background: #eef2ff; color: var(--primary-dark); font-weight: 700; }
-    .clear { padding: 7px 0; background: transparent; color: var(--danger); font-size: .9rem; }
-    .clear:hover { opacity: .75; }
-
-    .todo-list { display: grid; gap: 9px; min-height: 80px; }
-    .todo {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 13px 14px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      background: #fff;
-      animation: appear .18s ease-out;
-    }
-    @keyframes appear { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-    .todo input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
-    .todo-text { flex: 1; overflow-wrap: anywhere; }
-    .todo.completed .todo-text { color: var(--muted); text-decoration: line-through; }
-    .delete {
-      padding: 6px 8px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 1.1rem;
-      line-height: 1;
-    }
-    .delete:hover { color: var(--danger); background: #fef2f2; }
-    .empty { padding: 26px 12px; text-align: center; color: var(--muted); }
-    .stats { margin-top: 18px; color: var(--muted); font-size: .9rem; text-align: center; }
-    .storage-note { margin: 14px 0 0; color: var(--muted); font-size: .78rem; text-align: center; }
-
-    @media (max-width: 560px) {
-      body { padding: 12px; }
-      header, .content { padding-left: 18px; padding-right: 18px; }
-      .add-form { flex-direction: column; }
-      .add-form .primary { width: 100%; }
-      .toolbar { align-items: flex-start; flex-direction: column; }
-    }
+    :root{color-scheme:dark;--bg:#090d16;--panel:#111c2e;--panel2:#0b1424;--panel3:#16233a;--line:#293a55;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#10b981;--danger:#ef4444;--shadow:0 18px 60px #0008}
+    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}button,input,textarea{font:inherit}button{border:0;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none!important}
+    .app{height:100%;display:flex;flex-direction:column;background:var(--panel);overflow:hidden}.topbar,.footer{background:var(--panel2);border-color:var(--line);border-style:solid}.topbar{border-width:0 0 1px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#94a3b8 58%,#475569);color:#0f172a;font-weight:900;font-size:20px;box-shadow:0 4px 12px #0008}.brand h1{font-size:16px;margin:0;white-space:nowrap}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.toolbar{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}.metal,.tool,.send{border-radius:10px;padding:8px 11px;font-weight:700;font-size:12px;transition:.15s}.metal{color:#0f172a;background:linear-gradient(145deg,#fff,#cbd5e1 48%,#64748b);box-shadow:inset 0 1px #fff,0 3px 8px #0008}.metal:hover{filter:brightness(1.12);transform:translateY(-1px)}.tool{background:var(--panel3);border:1px solid var(--line);color:#dbeafe}.tool:hover{background:#203454}.main{flex:1;min-height:0;display:flex;flex-direction:column}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}.welcome{max-width:720px;margin:auto;text-align:center;color:var(--muted)}.welcome h2{color:#fff;margin:10px 0 6px}.welcome p{line-height:1.7;font-size:14px}.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}.quick button{background:var(--panel3);border:1px solid var(--line);color:#dbeafe;border-radius:12px;padding:10px;font-size:12px}.quick button:hover{border-color:#60a5fa}.msg{max-width:min(86%,800px);display:flex;gap:9px;align-items:flex-start}.msg.user{align-self:flex-end;flex-direction:row-reverse}.avatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;background:#1e293b;border:1px solid var(--line);color:#60a5fa;font-weight:800}.user .avatar{background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;padding:12px 14px;border-radius:15px;background:#1e293b;border:1px solid var(--line);font-size:14px}.user .bubble{background:#2563eb;border:0;border-radius:15px 3px 15px 15px}.actions{display:flex;gap:7px;margin-top:8px;border-top:1px solid #ffffff18;padding-top:6px}.actions button{background:transparent;color:#cbd5e1;font-size:11px;padding:2px}.actions button:hover{color:#fff}.attachments{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}.filechip{background:#0003;border:1px solid #ffffff25;padding:4px 7px;border-radius:8px;font-size:11px}.composer{padding:10px 14px;background:var(--panel2);border-top:1px solid var(--line);display:flex;gap:7px;align-items:center}.composer input{min-width:0;flex:1;background:var(--panel3);border:1px solid var(--line);border-radius:11px;color:#fff;padding:11px 13px;outline:0}.composer input:focus{border-color:#3b82f6}.send{background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;padding:11px 16px}.status{padding:5px 14px;background:#080f1a;border-top:1px solid #1a2942;color:var(--muted);font-size:10px;display:flex;justify-content:space-between}.modal{position:fixed;inset:0;background:#000b;backdrop-filter:blur(5px);z-index:10;display:grid;place-items:center;padding:12px}.dialog{width:min(100%,980px);height:min(92vh,760px);background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}.dialog-head,.dialog-foot{background:var(--panel2);padding:13px 16px;border-color:var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.dialog-head{border-bottom:1px solid var(--line)}.dialog-foot{border-top:1px solid var(--line);flex-wrap:wrap}.dialog-head h3{margin:0;font-size:15px}.close{background:#1a2942;color:#cbd5e1;border-radius:8px;padding:6px 10px}.dialog-body{flex:1;min-height:0;display:flex;overflow:hidden}.side{width:230px;overflow:auto;padding:12px;background:#0a1220;border-left:1px solid var(--line)}.side button{display:block;width:100%;text-align:right;background:transparent;color:#cbd5e1;border-radius:9px;padding:9px;margin-bottom:4px;font-size:12px}.side button.active,.side button:hover{background:#203454;color:#fff}.studio{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;padding:13px;overflow:auto}.row{display:flex;gap:8px;flex-wrap:wrap}.field{flex:1;min-width:180px}.field label{display:block;color:#cbd5e1;font-size:11px;font-weight:700;margin-bottom:5px}.field input,.field textarea,.code{width:100%;background:#080e1a;border:1px solid var(--line);color:#dbeafe;border-radius:9px;padding:9px;outline:0}.field textarea{resize:vertical}.code{flex:1;min-height:250px;resize:none;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;color:#86efac}.notice{font-size:11px;color:var(--muted);padding:8px;background:#16233a;border-radius:8px}.toast{position:fixed;z-index:30;top:62px;left:50%;transform:translateX(-50%);background:#172554;border:1px solid #60a5fa;color:#dbeafe;padding:10px 15px;border-radius:10px;font-size:12px;box-shadow:var(--shadow)}
+    @media(max-width:700px){.topbar{align-items:flex-start}.toolbar{max-width:55%}.toolbar .label{display:none}.side{width:125px}.msg{max-width:96%}.dialog{height:95vh}.dialog-body{flex-direction:column}.side{width:100%;height:auto;max-height:120px;border-left:0;border-bottom:1px solid var(--line);display:flex;gap:5px}.side button{width:auto;white-space:nowrap;margin:0}.composer{padding:8px}.send{padding:10px}.status{font-size:9px}}
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="card" aria-labelledby="page-title">
-      <header>
-        <h1 id="page-title">My To-Do List</h1>
-        <p class="subtitle">Keep track of what needs to get done.</p>
-      </header>
-
-      <div class="content">
-        <form class="add-form" id="todo-form">
-          <input id="todo-input" type="text" maxlength="200" placeholder="What needs to be done?" autocomplete="off" aria-label="New task" />
-          <button class="primary" type="submit">Add task</button>
-        </form>
-
-        <div class="toolbar">
-          <div class="filters" role="group" aria-label="Filter tasks">
-            <button class="filter active" type="button" data-filter="all">All</button>
-            <button class="filter" type="button" data-filter="active">Active</button>
-            <button class="filter" type="button" data-filter="completed">Completed</button>
-          </div>
-          <button class="clear" id="clear-completed" type="button">Clear completed</button>
-        </div>
-
-        <div class="todo-list" id="todo-list" aria-live="polite"></div>
-        <div class="stats" id="stats"></div>
-        <p class="storage-note">Your tasks are saved automatically in this browser.</p>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    (() => {
-      const STORAGE_KEY = 'editor-todo-list-v1';
-      let todos = loadTodos();
-      let filter = 'all';
-
-      const form = document.getElementById('todo-form');
-      const input = document.getElementById('todo-input');
-      const list = document.getElementById('todo-list');
-      const stats = document.getElementById('stats');
-      const clearCompleted = document.getElementById('clear-completed');
-      const filterButtons = [...document.querySelectorAll('[data-filter]')];
-
-      function loadTodos() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-          return Array.isArray(saved) ? saved.filter(item => item && typeof item.text === 'string') : [];
-        } catch {
-          return [];
-        }
-      }
-
-      function saveTodos() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-      }
-
-      function createId() {
-        return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      }
-
-      function visibleTodos() {
-        if (filter === 'active') return todos.filter(todo => !todo.completed);
-        if (filter === 'completed') return todos.filter(todo => todo.completed);
-        return todos;
-      }
-
-      function render() {
-        list.replaceChildren();
-        const visible = visibleTodos();
-
-        if (!visible.length) {
-          const empty = document.createElement('div');
-          empty.className = 'empty';
-          empty.textContent = todos.length ? 'No tasks in this view.' : 'No tasks yet. Add one above!';
-          list.appendChild(empty);
-        } else {
-          visible.forEach(todo => {
-            const item = document.createElement('div');
-            item.className = `todo${todo.completed ? ' completed' : ''}`;
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.checked = todo.completed;
-            checkbox.setAttribute('aria-label', `Mark “${todo.text}” as ${todo.completed ? 'active' : 'completed'}`);
-            checkbox.addEventListener('change', () => toggleTodo(todo.id));
-
-            const text = document.createElement('span');
-            text.className = 'todo-text';
-            text.textContent = todo.text;
-
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete';
-            deleteButton.type = 'button';
-            deleteButton.textContent = '×';
-            deleteButton.setAttribute('aria-label', `Delete “${todo.text}”`);
-            deleteButton.addEventListener('click', () => deleteTodo(todo.id));
-
-            item.append(checkbox, text, deleteButton);
-            list.appendChild(item);
-          });
-        }
-
-        const remaining = todos.filter(todo => !todo.completed).length;
-        stats.textContent = `${remaining} ${remaining === 1 ? 'task' : 'tasks'} remaining · ${todos.length} total`;
-        clearCompleted.disabled = !todos.some(todo => todo.completed);
-        filterButtons.forEach(button => button.classList.toggle('active', button.dataset.filter === filter));
-      }
-
-      function addTodo(text) {
-        todos.unshift({ id: createId(), text, completed: false, createdAt: Date.now() });
-        saveTodos();
-        render();
-      }
-
-      function toggleTodo(id) {
-        todos = todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo);
-        saveTodos();
-        render();
-      }
-
-      function deleteTodo(id) {
-        todos = todos.filter(todo => todo.id !== id);
-        saveTodos();
-        render();
-      }
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        const text = input.value.trim();
-        if (!text) return;
-        addTodo(text);
-        input.value = '';
-        input.focus();
-      });
-
-      filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          filter = button.dataset.filter;
-          render();
-        });
-      });
-
-      clearCompleted.addEventListener('click', () => {
-        todos = todos.filter(todo => !todo.completed);
-        saveTodos();
-        render();
-      });
-
-      render();
-    })();
-  </script>
+<div id="app"></div>
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r=document) => r.querySelector(s);
+  const escapeText = value => String(value ?? '');
+  const uid = () => (globalThis.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now()+'-'+Math.random().toString(36).slice(2);
+  const store = 'editor-lab-standalone-v1';
+  const state = { language:'ar', messages:[], files:[], busy:false, modal:null, codeTab:'main', codeLang:'javascript', code:'', apk:{name:'EDITORAssistant',pkg:'com.editor.assistant.app',type:'Kotlin',description:'تطبيق ذكي متكامل للمحادثة مع الذكاء الاصطناعي'}, filter:'' };
+  try { const saved=JSON.parse(localStorage.getItem(store)||'{}'); if(Array.isArray(saved.messages)) state.messages=saved.messages; if(saved.language==='en'||saved.language==='ar') state.language=saved.language; } catch(e) {}
+  const ar = () => state.language === 'ar';
+  const t = (a,e) => ar()?a:e;
+  const save = () => { try { localStorage.setItem(store, JSON.stringify({messages:state.messages,language:state.language})); } catch(e) {} };
+  const toast = text => { const old=$('.toast'); if(old) old.remove(); const el=document.createElement('div'); el.className='toast'; el.textContent=text; document.body.appendChild(el); setTimeout(()=>el.remove(),2800); };
+  const download = (name, content, type='text/plain;charset=utf-8') => { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); };
+  const codeTemplates = {
+    javascript:`// Modern JavaScript\nexport async function fetchInteraction(prompt) {\n  const response = await fetch('/api/chat', {\n    method: 'POST',\n    headers: {'Content-Type': 'application/json'},\n    body: JSON.stringify({messages: [{role: 'user', content: prompt}]})\n  });\n  if (!response.ok) throw new Error('Request failed');\n  return response.json();\n}`,
+    python:`# Python 3.12\ndef process_data(data: list) -> dict:\n    return {"count": len(data), "status": "success"}\n\nif __name__ == "__main__":\n    print(process_data([]))`,
+    typescript:`interface InteractionResponse<T> {\n  id: string;\n  status: 'success' | 'error';\n  data: T;\n}\n\nexport const isSuccess = <T>(value: InteractionResponse<T>) => value.status === 'success';`,
+    kotlin:`package com.editor.app\n\nimport android.os.Bundle\nimport androidx.appcompat.app.AppCompatActivity\n\nclass MainActivity : AppCompatActivity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    setContentView(R.layout.activity_main)\n  }\n}`,
+    html:`<!doctype html>\n<html lang="ar" dir="rtl">\n<head><meta charset="utf-8"><title>EDITOR App</title></head>\n<body><main><h1>مرحباً بك</h1></main></body>\n</html>`,
+    sql:`CREATE TABLE IF NOT EXISTS interactions (\n  id VARCHAR(64) PRIMARY KEY,\n  user_prompt TEXT NOT NULL,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);`
+  };
+  state.code=codeTemplates.javascript;
+  const languages=[['javascript','JavaScript','.js'],['typescript','TypeScript','.ts'],['python','Python','.py'],['kotlin','Kotlin (Android)','.kt'],['html','HTML5','.html'],['sql','SQL','.sql']];
+  function render(){ document.documentElement.lang=state.language; document.documentElement.dir=ar()?'rtl':'ltr'; document.title=ar()?'مختبر EDITOR':'EDITOR Lab'; $('#app').innerHTML=`
+    <div class="app">
+      <header class="topbar"><div class="brand"><div class="logo">E</div><div><h1>${t('مختبر EDITOR','EDITOR Lab')}</h1><small>${t('منصة مستقلة للمحادثة والبرمجة وبناء مشاريع أندرويد','Standalone chat, code and Android project workspace')}</small></div></div>
+      <nav class="toolbar"><button class="metal" data-action="code">⌘ <span class="label">${t('استوديو الأكواد','Code Studio')}</span></button><button class="metal" data-action="apk">📱 <span class="label">${t('بناء APK','APK Studio')}</span></button><button class="metal" data-action="lang">🌐 ${ar()?'EN':'AR'}</button><button class="tool" data-action="clear">${t('مسح','Clear')}</button></nav></header>
+      <main class="main"><section class="messages" id="messages">${renderMessages()}</section><div class="composer"><button class="metal" data-action="attach" title="${t('إرفاق ملفات','Attach files')}">＋</button><input id="prompt" autocomplete="off" placeholder="${t('اكتب رسالتك أو سؤالك هنا...','Type your message here...')}" ${state.busy?'disabled':''}><button class="send" data-action="send" ${state.busy?'disabled':''}>${state.busy?'…':t('إرسال','Send')} ➤</button><input id="fileInput" class="hidden" type="file" multiple></div></main>
+      <footer class="status"><span>● ${state.busy?t('جاري المعالجة...','Processing...'):t('جاهز - تشغيل مستقل محلياً','Ready - standalone local mode')}</span><span>${state.files.length?state.files.length+' '+t('ملف','files'):''}</span></footer>
+    </div>${state.modal?renderModal():''}`; bind(); const m=$('#messages'); if(m)m.scrollTop=m.scrollHeight; }
+  function renderMessages(){ if(!state.messages.length) return `<div class="welcome"><div class="logo" style="margin:auto">✦</div><h2>${t('مرحباً بك في مختبر EDITOR','Welcome to EDITOR Lab')}</h2><p>${t('تطبيق HTML واحد يعمل دون بناء أو خادم: محادثة محلية، توليد أكواد، إنشاء بنية مشروع Android، إرفاق ملفات وتصدير البيانات.','One HTML file with no build step or server: local chat, code generation, Android project architecture, file attachments and export.')}</p><div class="quick"><button data-quick="${t('اكتب مثالاً عملياً بلغة JavaScript مع اختبارات.','Write a practical JavaScript example with tests.')}">${t('توليد كود','Generate code')}</button><button data-quick="${t('أنشئ بنية تطبيق Android كاملة.','Create a complete Android app architecture.')}">${t('بناء Android','Build Android')}</button></div></div>`; return state.messages.map((m,i)=>`<article class="msg ${m.role}"><div class="avatar">${m.role==='user'?'U':'E'}</div><div><div class="bubble">${m.files?.length?'<div class="attachments">'+m.files.map(f=>`<span class="filechip">📎 ${escapeText(f.name)}</span>`).join('')+'</div>':''}${escapeText(m.content)}</div><div class="actions"><button data-copy="${i}">${t('نسخ','Copy')}</button><button data-download="${i}">${t('تنزيل','Download')}</button></div></div></article>`).join(''); }
+  function renderModal(){ return state.modal==='code'?codeModal():apkModal(); }
+  function codeModal(){ return `<div class="modal"><div class="dialog"><div class="dialog-head"><h3>💻 ${t('استوديو الأكواد','Code Studio')}</h3><button class="close" data-action="close">✕</button></div><div class="dialog-body"><aside class="side">${languages.map(x=>`<button class="${state.codeLang===x[0]?'active':''}" data-language="${x[0]}">${x[1]} <small>${x[2]}</small></button>`).join('')}</aside><section class="studio"><div class="row"><div class="field"><label>${t('وصف المطلوب','Requirements')}</label><input id="codePrompt" placeholder="${t('مثال: دالة للتحقق من البريد الإلكتروني','Example: email validation function')}"></div><button class="metal" data-action="generateCode">✨ ${t('توليد','Generate')}</button></div><div class="notice">${t('يمكن تعديل الناتج يدوياً. يعمل التوليد المحلي بقوالب آمنة عند عدم توفر API.','Edit the output directly. Local templates are used safely when no API is available.')}</div><textarea class="code" id="codeOutput" spellcheck="false">${escapeText(state.code)}</textarea></section></div><div class="dialog-foot"><span class="notice">${languages.find(x=>x[0]===state.codeLang)?.[1]}</span><div class="row"><button class="tool" data-action="copyCode">${t('نسخ','Copy')}</button><button class="tool" data-action="downloadCode">${t('تنزيل','Download')}</button><button class="metal" data-action="shareCode">${t('مشاركة في المحادثة','Share to chat')}</button></div></div></div></div>`; }
+  function apkModal(){ const a=state.apk; const manifest=`<?xml version="1.0" encoding="utf-8"?>\n<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="${a.pkg}">\n  <uses-permission android:name="android.permission.INTERNET" />\n  <application android:label="${a.name}" android:theme="@style/Theme.AppCompat.Light.DarkActionBar">\n    <activity android:name=".MainActivity" android:exported="true">\n      <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>\n    </activity>\n  </application>\n</manifest>`; const main=`package ${a.pkg}\n\nimport android.os.Bundle\nimport androidx.appcompat.app.AppCompatActivity\n\nclass MainActivity : AppCompatActivity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    setContentView(R.layout.activity_main)\n  }\n}`; const gradle=`plugins {\n  id 'com.android.application'\n  id 'org.jetbrains.kotlin.android'\n}\n\nandroid {\n  namespace '${a.pkg}'\n  compileSdk 35\n  defaultConfig { applicationId '${a.pkg}'; minSdk 24; targetSdk 35; versionCode 1; versionName '1.0' }\n}`; const values={main,manifest,gradle}; return `<div class="modal"><div class="dialog"><div class="dialog-head"><h3>📱 ${t('استوديو بناء Android','Android APK Studio')}</h3><button class="close" data-action="close">✕</button></div><div class="dialog-body"><section class="studio"><div class="row"><div class="field"><label>${t('اسم التطبيق','App name')}</label><input id="apkName" value="${escapeText(a.name)}"></div><div class="field"><label>${t('معرف الحزمة','Package ID')}</label><input id="apkPkg" value="${escapeText(a.pkg)}"></div></div><div class="row"><div class="field"><label>${t('الوصف','Description')}</label><textarea id="apkDesc" rows="2">${escapeText(a.description)}</textarea></div></div><div class="row" id="apkTabs">${[['main','MainActivity.kt'],['manifest','AndroidManifest.xml'],['gradle','build.gradle']].map(x=>`<button class="${state.codeTab===x[0]?'metal':'tool'}" data-apktab="${x[0]}">${x[1]}</button>`).join('')}</div><textarea class="code" id="apkOutput" spellcheck="false">${escapeText(values[state.codeTab])}</textarea></section></div><div class="dialog-foot"><span class="notice">${t('هذه نسخة مستقلة: يتم إنشاء ملفات المشروع وتصديرها محلياً.','Standalone mode: project files are generated and exported locally.')}</span><div class="row"><button class="tool" data-action="copyApk">${t('نسخ','Copy')}</button><button class="tool" data-action="downloadApk">${t('تنزيل المشروع','Download project')}</button><button class="metal" data-action="shareApk">${t('مشاركة في المحادثة','Share to chat')}</button></div></div></div></div>`; }
+  function bind(){ document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>action(b.dataset.action)); document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>send(b.dataset.quick)); document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copy(state.messages[+b.dataset.copy].content)); document.querySelectorAll('[data-download]').forEach(b=>b.onclick=()=>download('editor-message.txt',state.messages[+b.dataset.download].content)); document.querySelectorAll('[data-language]').forEach(b=>b.onclick=()=>{state.codeLang=b.dataset.language;state.code=codeTemplates[state.codeLang]||'';render()}); document.querySelectorAll('[data-apktab]').forEach(b=>b.onclick=()=>{saveApkFields();state.codeTab=b.dataset.apktab;render()}); const p=$('#prompt'); if(p){p.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};p.focus()} const fi=$('#fileInput');if(fi)fi.onchange=()=>{state.files=[...fi.files].slice(0,100).map(f=>({name:f.name,size:f.size}));render()}; const co=$('#codeOutput');if(co)co.oninput=()=>state.code=co.value; const ao=$('#apkOutput');if(ao)ao.oninput=()=>{state.apk[state.codeTab==='main'?'main':state.codeTab]=ao.value}; }
+  function action(a){ if(a==='lang'){state.language=ar()?'en':'ar';save();render();return} if(a==='clear'){if(confirm(t('مسح سجل المحادثة؟','Clear chat history?'))){state.messages=[];save();render()}return} if(a==='attach'){$('#fileInput')?.click();return} if(a==='send')send(); if(a==='code'){state.modal='code';render()} if(a==='apk'){state.modal='apk';render()} if(a==='close'){state.modal=null;render()} if(a==='copyCode')copy(state.code); if(a==='downloadCode')download('editor-code.'+(languages.find(x=>x[0]===state.codeLang)||languages[0])[2],state.code); if(a==='generateCode')generateCode(); if(a==='shareCode'){const text='💻 '+t('كود مصمم','Designed code')+'\n```'+state.codeLang+'\n'+($('#codeOutput')?.value||state.code)+'\n```';state.modal=null;send(text)} if(a==='copyApk')copy($('#apkOutput')?.value||''); if(a==='downloadApk'){saveApkFields();const a=state.apk;const files={'README.md':`# ${a.name}\n\n${a.description}\n\nOpen this project in Android Studio and build with Gradle.\n`,'app/src/main/AndroidManifest.xml':apkText('manifest'),'app/src/main/java/'+a.pkg.replace(/\./g,'/')+'/MainActivity.kt':apkText('main'),'app/build.gradle':apkText('gradle')};download(a.name+'_android_project.json',JSON.stringify(files,null,2),'application/json')} if(a==='shareApk'){saveApkFields();state.modal=null;send('📱 '+t('بنية مشروع Android','Android project architecture')+'\n'+JSON.stringify(state.apk,null,2))} }
+  function saveApkFields(){const n=$('#apkName'),p=$('#apkPkg'),d=$('#apkDesc');if(n)state.apk.name=n.value.trim()||'EDITORAssistant';if(p)state.apk.pkg=p.value.trim()||'com.editor.assistant.app';if(d)state.apk.description=d.value.trim()}
+  function apkText(tab){const a=state.apk;if(tab==='manifest')return `<?xml version="1.0" encoding="utf-8"?>\n<manifest package="${a.pkg}"><uses-permission android:name="android.permission.INTERNET"/><application android:label="${a.name}"><activity android:name=".MainActivity" android:exported="true"/></application></manifest>`;if(tab==='gradle')return `plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }\nandroid { namespace '${a.pkg}'; compileSdk 35; defaultConfig { applicationId '${a.pkg}'; minSdk 24; targetSdk 35; versionCode 1; versionName '1.0' } }`;return `package ${a.pkg}\n\nimport android.os.Bundle\nimport androidx.appcompat.app.AppCompatActivity\n\nclass MainActivity : AppCompatActivity() { override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); setContentView(R.layout.activity_main) } }`}
+  function generateCode(){const q=$('#codePrompt')?.value.trim()||'';const lang=state.codeLang;state.code=(codeTemplates[lang]||'// Generated code')+'\n\n// '+(q||'Generated by EDITOR standalone');render()}
+  async function copy(text){try{await navigator.clipboard.writeText(text);toast(t('تم النسخ','Copied'))}catch(e){toast(t('تعذر النسخ تلقائياً','Clipboard unavailable'))}}
+  function send(value){const input=$('#prompt');const text=(value??input?.value??'').trim();if(!text&&!state.files.length||state.busy)return;const files=state.files;state.files=[];state.messages.push({id:uid(),role:'user',content:text||t('[ملفات مرفقة]','[Attached files]'),files});state.busy=true;save();render();setTimeout(()=>{const reply=localReply(text,files);state.messages.push({id:uid(),role:'assistant',content:reply});state.busy=false;save();render()},350)}
+  function localReply(text,files){const low=text.toLowerCase();if(low.includes('apk')||low.includes('android')||text.includes('أندرويد'))return t('يمكنك فتح استوديو APK من الشريط العلوي، ضبط اسم التطبيق ومعرف الحزمة، ثم تنزيل ملفات المشروع بصيغة JSON وفتحها في Android Studio.','Open APK Studio from the top bar, set the app name and package ID, then download the project files as JSON and open them in Android Studio.');if(low.includes('code')||low.includes('javascript')||low.includes('python')||text.includes('كود'))return t('تم استلام طلب الكود. افتح استوديو الأكواد لتحديد اللغة وتعديل الناتج وتنزيله. هذه النسخة المستقلة لا تحتاج إلى خادم أو مفتاح API.','Code request received. Open Code Studio to select a language, edit the result and download it. This standalone version needs no server or API key.');if(files.length)return t(`تمت إضافة ${files.length} ملفاً. النسخة المستقلة تحفظ أسماء الملفات وتتيح متابعة المحادثة دون رفع البيانات إلى خادم.`,`Added ${files.length} file(s). Standalone mode keeps file names and continues locally without uploading data to a server.`);return t('تمت معالجة رسالتك محلياً. استخدم استوديو الأكواد أو استوديو APK لإنشاء الملفات وتصديرها.','Your message was processed locally. Use Code Studio or APK Studio to create and export files.');}
+  render();
+})();
+</script>
 </body>
 </html>
