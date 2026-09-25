@@ -30,10 +30,15 @@
     <script>
       (() => {
         const root = document.getElementById('root');
+        if (!root) return;
+
         if (location.protocol !== 'file:') {
           const script = document.createElement('script');
           script.type = 'module';
-          script.src = '/src/main.tsx';
+          script.src = new URL('./src/main.tsx', document.baseURI).href;
+          script.onerror = () => {
+            root.innerHTML = '<main class="standalone"><section class="card"><h1>مختبر EDITOR</h1><p>تعذر تحميل تطبيق React. شغّل المشروع باستخدام npm run dev.</p></section></main>';
+          };
           document.body.appendChild(script);
           return;
         }
@@ -57,6 +62,7 @@
         const prompt = document.getElementById('prompt');
         const send = document.getElementById('send');
         const status = document.getElementById('status');
+        if (!messages || !prompt || !send || !status) return;
 
         function addMessage(text, type) {
           const item = document.createElement('div');
@@ -90,7 +96,7 @@
             });
             if (!response.ok) throw new Error('HTTP ' + response.status);
             const data = await response.json();
-            const answer = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+            const answer = data?.choices?.[0]?.message?.content;
             if (!answer) throw new Error('Empty response');
             addMessage(answer, 'assistant');
             status.textContent = 'متصل ويعمل دون مفتاح تفعيل.';
