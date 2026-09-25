@@ -3,83 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="EDITOR Lab - local AI workspace">
+  <meta name="description" content="EDITOR Lab - private local AI chat">
   <title>مختبر EDITOR</title>
   <style>
-    :root{color-scheme:dark;--bg:#080d16;--panel:#111c2e;--panel2:#0b1424;--panel3:#16233a;--line:#293a55;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#10b981;--danger:#ef4444}
-    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}.app{height:100%;display:flex;flex-direction:column;background:var(--panel)}button,input,textarea{font:inherit}button{border:0;cursor:pointer;color:inherit}button:disabled{opacity:.5;cursor:not-allowed}.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-size:24px;font-weight:800;box-shadow:0 3px 8px #0008}.title{font-weight:800;font-size:16px;flex:1}.status{font-size:11px;color:#86efac}.actions{display:flex;gap:7px;flex-wrap:wrap}.btn{padding:8px 12px;border-radius:9px;background:var(--panel3);border:1px solid var(--line);font-size:12px}.btn:hover{background:#203454}.btn.primary{background:var(--blue);border-color:#3b82f6}.btn.metal{background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-weight:800;border:1px solid #e2e8f0}.chat-panel{min-height:0;flex:1;display:flex;flex-direction:column}.messages{min-height:0;flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.welcome{text-align:center;max-width:600px;margin:auto;color:var(--muted)}.welcome h2{color:var(--text)}.msg{max-width:min(850px,92%);padding:12px 14px;border-radius:14px;white-space:pre-wrap;word-break:break-word;line-height:1.65;border:1px solid var(--line)}.msg.user{align-self:flex-end;background:#2563eb;color:#fff;border-top-right-radius:3px}.msg.assistant{align-self:flex-start;background:#1e293b;border-top-left-radius:3px}.msg-head{font-size:11px;font-weight:700;color:#93c5fd;margin-bottom:5px}.user .msg-head{color:#dbeafe}.composer{padding:12px 16px;background:var(--panel2);border-top:1px solid var(--line)}#prompt{width:100%;resize:none;min-height:48px;max-height:140px;padding:12px;border-radius:10px;background:#16233a;border:1px solid var(--line);color:#fff;outline:0}#prompt:focus{border-color:#3b82f6}.compose-row{display:flex;gap:8px;align-items:center;margin-top:8px}.compose-row .grow{flex:1}.file-list{display:flex;gap:6px;overflow:auto;padding:6px 0}.file-chip{white-space:nowrap;padding:5px 8px;border-radius:7px;background:#18263e;border:1px solid #2c4266;font-size:11px}.toast{position:fixed;z-index:20;top:70px;left:50%;transform:translateX(-50%);padding:10px 14px;border-radius:9px;background:#020617;border:1px solid #475569;box-shadow:0 8px 30px #0008;font-size:12px}.modal{position:fixed;inset:0;z-index:10;background:#000b;display:grid;place-items:center;padding:16px}.dialog{width:min(900px,100%);height:min(760px,92vh);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px #000c}.dialog-head{display:flex;align-items:center;padding:14px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}.dialog-head h2{font-size:16px;flex:1;margin:0}.close{background:transparent;font-size:22px;padding:3px 8px}.dialog-body{min-height:0;flex:1;display:flex;flex-direction:column;gap:10px;padding:14px;overflow:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}.field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;background:#0a1220;color:#fff;outline:0}.code{min-height:300px;flex:1;width:100%;resize:none;padding:12px;border:1px solid var(--line);border-radius:9px;background:#080e1a;color:#86efac;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;direction:ltr;text-align:left}.dialog-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;background:var(--panel2);border-top:1px solid var(--line)}@media(max-width:600px){.topbar{padding:9px}.status{display:none}.messages{padding:12px}.composer{padding:10px}.actions .btn{padding:7px 8px}.msg{max-width:97%}}
+    :root{color-scheme:dark;--bg:#080d16;--panel:#111c2e;--panel2:#0b1424;--line:#293a55;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#10b981;--danger:#ef4444}
+    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer;color:inherit}button:disabled{opacity:.5;cursor:not-allowed}.app{height:100%;display:flex;flex-direction:column;background:var(--panel)}header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-size:24px;font-weight:800}.brand{font-weight:800;flex:1}.status{font-size:11px;color:#fbbf24}.actions{display:flex;gap:7px;align-items:center}.btn{padding:8px 12px;border-radius:9px;background:#16233a;border:1px solid var(--line);font-size:12px}.btn:hover{background:#203454}.primary{background:var(--blue);border-color:#3b82f6}.chat{min-height:0;flex:1;display:flex;flex-direction:column}.messages{min-height:0;flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.welcome{text-align:center;max-width:650px;margin:auto;color:var(--muted)}.welcome h2{color:var(--text)}.msg{max-width:min(850px,92%);padding:12px 14px;border-radius:14px;white-space:pre-wrap;word-break:break-word;line-height:1.65;border:1px solid var(--line)}.msg.user{align-self:flex-end;background:#2563eb;border-top-right-radius:3px}.msg.assistant{align-self:flex-start;background:#1e293b;border-top-left-radius:3px}.msg-head{font-size:11px;font-weight:700;color:#bfdbfe;margin-bottom:5px}.composer{padding:12px 16px;background:var(--panel2);border-top:1px solid var(--line)}textarea{width:100%;resize:none;padding:12px;border-radius:10px;background:#16233a;border:1px solid var(--line);color:#fff;outline:0}textarea:focus{border-color:#3b82f6}.compose{display:flex;gap:8px;margin-top:8px;align-items:center}.grow{flex:1}.progress{font-size:11px;color:var(--muted);margin-top:7px;min-height:16px}.toast{position:fixed;z-index:5;top:70px;left:50%;transform:translateX(-50%);padding:10px 14px;border-radius:9px;background:#020617;border:1px solid #475569;box-shadow:0 8px 30px #0008;font-size:12px}.info{padding:10px 16px;background:#172554;color:#bfdbfe;border-bottom:1px solid #1d4ed8;font-size:12px;line-height:1.6}@media(max-width:700px){header{padding:9px}.status{display:none}.messages{padding:12px}.composer{padding:10px}.actions .btn{padding:7px 8px}.msg{max-width:97%}}
   </style>
 </head>
 <body>
-  <div id="app"></div>
-  <script>
-  (() => {
-    'use strict';
-    const $ = (selector, root = document) => root.querySelector(selector);
-    const uid = () => (globalThis.crypto && typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2);
-    const STORAGE_KEY = 'editor-lab-local-v4';
-    const templates = {
-      javascript: 'export function greet(name) {\\n  return `Hello, ${name}!`;\\n}',
-      typescript: 'type Result<T> = { ok: true; data: T } | { ok: false; error: string };\\n\\nexport function success<T>(data: T): Result<T> {\\n  return { ok: true, data };\\n}',
-      python: 'def process_data(data: list) -> dict:\\n    return {"count": len(data), "status": "success"}\\n',
-      kotlin: 'package com.editor.app\\n\\nclass MainActivity {\\n    fun greeting(): String = "Hello from EDITOR"\\n}',
-      html: '<!doctype html>\\n<html lang="ar" dir="rtl">\\n  <body><h1>مرحباً بك</h1></body>\\n</html>',
-      sql: 'CREATE TABLE IF NOT EXISTS interactions (\\n  id VARCHAR(64) PRIMARY KEY,\\n  user_prompt TEXT NOT NULL\\n);'
-    };
-    const languages = [['javascript','JavaScript','.js'],['typescript','TypeScript','.ts'],['python','Python','.py'],['kotlin','Kotlin','.kt'],['html','HTML','.html'],['sql','SQL','.sql']];
-    const state = { language:'ar', messages:[], files:[], busy:false, modal:null, codeLang:'javascript', code:templates.javascript, codePrompt:'', apk:{name:'EDITORAssistant', pkg:'com.editor.assistant.app', type:'Kotlin', desc:''} };
-    try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); Object.assign(state, saved); } catch (_) {}
-    if (!['ar','en'].includes(state.language)) state.language='ar';
-    if (!Array.isArray(state.messages)) state.messages=[];
-    if (!Array.isArray(state.files)) state.files=[];
-    if (!templates[state.codeLang]) { state.codeLang='javascript'; state.code=templates.javascript; }
-    const isAr = () => state.language === 'ar';
-    const t = (ar, en) => isAr() ? ar : en;
-    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const save = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({language:state.language,messages:state.messages.slice(-50)})); } catch (_) {} };
-    const toast = (text) => { document.querySelector('.toast')?.remove(); const node=document.createElement('div'); node.className='toast'; node.textContent=text; document.body.appendChild(node); setTimeout(()=>node.remove(),2600); };
-    const download = (name, content, type='text/plain;charset=utf-8') => { const url=URL.createObjectURL(new Blob([content],{type})); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),500); };
-    const localReply = (prompt) => {
-      const text = String(prompt || ''); const lower=text.toLowerCase();
-      if (/كود|code|javascript|python|react|typescript/.test(lower)) return isAr() ? 'وضع الذكاء المحلي نشط.\\n\\nمثال برمجي:\\n\\n```js\\nfunction greet(name) {\\n  return `مرحباً ${name}`;\\n}\\n```\\n\\nلتوليد إجابات ذكية فعلية يلزم ربط مزود AI رسمي.' : 'Local AI mode is active.\\n\\nExample:\\n\\n```js\\nfunction greet(name) {\\n  return `Hello ${name}`;\\n}\\n```\\n\\nA valid provider connection is required for real model-generated answers.';
-      if (/apk|android|أندرويد/.test(lower)) return t('تم تفعيل وضع إنشاء APK المحلي. يمكنك فتح APK Studio وتصدير بنية المشروع كملف ZIP.', 'Local APK mode is active. Open APK Studio to export the project structure as a ZIP.');
-      return t('تمت معالجة طلبك في الوضع المحلي بدون GEMINI_API_KEY.\\n\\nالطلب: ' + text + '\\n\\nيمكنك استخدام Code Studio وAPK Studio والتصدير محلياً.', 'Your request was processed in local mode without GEMINI_API_KEY.\\n\\nRequest: ' + text + '\\n\\nCode Studio, APK Studio, and local exports are available.');
-    };
-    async function requestReply(prompt) {
-      try {
-        const response = await fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:state.messages.map(m=>({role:m.role,content:m.content})),language:state.language,attachedFiles:state.files})});
-        if (!response.ok) throw new Error('API request failed');
-        const data=await response.json(); const answer=data?.choices?.[0]?.message?.content || data?.response;
-        return typeof answer === 'string' && answer.trim() ? answer : localReply(prompt);
-      } catch (_) { return localReply(prompt); }
-    }
-    function renderMessages() {
-      if (!state.messages.length) return '<div class="welcome"><div class="logo" style="margin:auto">✦</div><h2>'+t('مرحباً بك في مختبر EDITOR','Welcome to EDITOR Lab')+'</h2><p>'+t('يعمل التطبيق محلياً بدون الحاجة إلى GEMINI_API_KEY.','The app works locally without GEMINI_API_KEY.')+'</p></div>';
-      return state.messages.map(m=>'<article class="msg '+m.role+'"><div class="msg-head">'+(m.role==='user'?t('أنت','You'):t('المساعد','Assistant'))+'</div><div>'+escapeHtml(m.content)+'</div></article>').join('');
-    }
-    function renderFiles() { return state.files.length ? '<div class="file-list">'+state.files.map((f,i)=>'<span class="file-chip">'+escapeHtml(f.name)+' <button data-action="remove-file" data-index="'+i+'">×</button></span>').join('')+'</div>' : ''; }
-    function codeModal() {
-      const options=languages.map(l=>'<option value="'+l[0]+'" '+(state.codeLang===l[0]?'selected':'')+'>'+l[1]+'</option>').join('');
-      return '<div class="modal"><section class="dialog"><header class="dialog-head"><h2>💻 '+t('استوديو الأكواد','Code Studio')+'</h2><button class="close" data-action="close">×</button></header><div class="dialog-body"><div class="grid"><label class="field">'+t('اللغة','Language')+'<select id="code-language">'+options+'</select></label><label class="field">'+t('وصف الكود','Code request')+'<input id="code-prompt" value="'+escapeHtml(state.codePrompt)+'" placeholder="'+t('مثال: دالة لحساب المجموع','Example: sum function')+'"></label></div><textarea id="code-editor" class="code">'+escapeHtml(state.code)+'</textarea></div><footer class="dialog-foot"><button class="btn" data-action="copy-code">'+t('نسخ','Copy')+'</button><button class="btn" data-action="download-code">'+t('تحميل','Download')+'</button><button class="btn primary" data-action="generate-code">'+t('توليد محلي','Generate locally')+'</button></footer></section></div>';
-    }
-    function apkModal() {
-      const a=state.apk; const manifest='<?xml version="1.0" encoding="utf-8"?>\\n<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="'+escapeHtml(a.pkg)+'">\\n  <uses-permission android:name="android.permission.INTERNET" />\\n  <application android:label="'+escapeHtml(a.name)+'">\\n    <activity android:name=".MainActivity" android:exported="true" />\\n  </application>\\n</manifest>';
-      return '<div class="modal"><section class="dialog"><header class="dialog-head"><h2>📱 '+t('استوديو APK','APK Studio')+'</h2><button class="close" data-action="close">×</button></header><div class="dialog-body"><div class="grid"><label class="field">'+t('اسم التطبيق','App name')+'<input id="apk-name" value="'+escapeHtml(a.name)+'"></label><label class="field">'+t('معرف الحزمة','Package')+'<input id="apk-pkg" value="'+escapeHtml(a.pkg)+'"></label><label class="field">'+t('النوع','Framework')+'<select id="apk-type"><option>Kotlin</option><option>Flutter</option><option>Compose</option></select></label></div><textarea id="apk-editor" class="code">'+escapeHtml(manifest)+'</textarea></div><footer class="dialog-foot"><button class="btn" data-action="copy-apk">'+t('نسخ Manifest','Copy manifest')+'</button><button class="btn primary" data-action="download-apk">'+t('تحميل المشروع','Download project')+'</button></footer></section></div>';
-    }
-    function render() {
-      document.documentElement.lang=state.language; document.documentElement.dir=isAr()?'rtl':'ltr'; document.title=isAr()?'مختبر EDITOR':'EDITOR Lab';
-      $('#app').innerHTML='<div class="app"><header class="topbar"><div class="logo">✦</div><div class="title">'+t('مختبر EDITOR','EDITOR Lab')+'</div><span class="status">● '+t('وضع محلي','Local mode')+'</span><div class="actions"><button class="btn metal" data-action="code">💻 '+t('الأكواد','Code')+'</button><button class="btn metal" data-action="apk">📱 APK</button><button class="btn" data-action="lang">'+(isAr()?'EN':'عربي')+'</button><button class="btn" data-action="export">'+t('تصدير','Export')+'</button><button class="btn" data-action="clear">'+t('مسح','Clear')+'</button></div></header><main class="chat-panel"><div id="messages" class="messages">'+renderMessages()+'</div><div class="composer">'+renderFiles()+'<textarea id="prompt" rows="2" placeholder="'+t('اكتب رسالتك...','Type your message...')+'"></textarea><div class="compose-row"><button class="btn" data-action="attach">📎 '+t('إرفاق','Attach')+'</button><span class="grow"></span><button class="btn primary" data-action="send">➤ '+t('إرسال','Send')+'</button></div><input id="picker" type="file" multiple hidden></div></main>'+(state.modal==='code'?codeModal():state.modal==='apk'?apkModal():'')+'</div>';
-      bind(); const messages=$('#messages'); if(messages) messages.scrollTop=messages.scrollHeight;
-    }
-    async function send(value) { const input=$('#prompt'); const text=String(value ?? input?.value ?? '').trim(); if((!text&&!state.files.length)||state.busy)return; state.busy=true; const files=state.files.splice(0); state.messages.push({id:uid(),role:'user',content:text || t('[تم إرفاق ملفات]','[Files attached]'),files}); state.messages.push({id:uid(),role:'assistant',content:t('جاري المعالجة...','Processing...')}); render(); const answer=await requestReply(text); state.messages[state.messages.length-1].content=answer; state.busy=false; save(); render(); }
-    function bind() { document.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>handleAction(button.dataset.action,button))); $('#prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}); $('#picker')?.addEventListener('change',e=>{state.files=[...e.target.files].slice(0,100).map(f=>({name:f.name,size:f.size,type:f.type||'file'}));render();}); }
-    async function handleAction(action,button) {
-      if(action==='lang'){state.language=isAr()?'en':'ar';save();render();return} if(action==='clear'){if(confirm(t('مسح المحادثة؟','Clear chat?'))){state.messages=[];state.files=[];save();render();}return} if(action==='attach'){$('#picker')?.click();return} if(action==='remove-file'){state.files.splice(Number(button.dataset.index),1);render();return} if(action==='send'){send();return} if(action==='code'){state.modal='code';render();return} if(action==='apk'){state.modal='apk';render();return} if(action==='close'){state.modal=null;render();return} if(action==='export'){download('editor-chat.txt',state.messages.map(m=>m.role+': '+m.content).join('\\n\\n'));return}
-      if(action==='copy-code'||action==='download-code'||action==='generate-code'){const editor=$('#code-editor'); if(editor)state.code=editor.value; const prompt=$('#code-prompt')?.value.trim()||''; state.codePrompt=prompt; if(action==='copy-code'){try{await navigator.clipboard.writeText(state.code);toast(t('تم النسخ','Copied'));}catch(_){toast(t('تعذر النسخ','Copy unavailable'));}} if(action==='download-code')download('editor-'+state.codeLang+'.txt',state.code); if(action==='generate-code'){state.code=prompt?'// '+prompt+'\\n\\n'+(templates[state.codeLang]||'// Local generated code'):(templates[state.codeLang]||state.code);render();}return}
-      if(action==='copy-apk'||action==='download-apk'){state.apk.name=$('#apk-name')?.value||state.apk.name;state.apk.pkg=$('#apk-pkg')?.value||state.apk.pkg;const content=$('#apk-editor')?.value||'';if(action==='copy-apk'){try{await navigator.clipboard.writeText(content);toast(t('تم النسخ','Copied'));}catch(_){toast(t('تعذر النسخ','Copy unavailable'));}}else{download(state.apk.name+'_Android_Project_Manifest.xml',content,'application/xml;charset=utf-8');}return}
-    }
-    render();
-  })();
-  </script>
+<div id="app"></div>
+<script type="module">
+  const MODEL = 'Llama-3.2-1B-Instruct-q4f16_1-MLC';
+  const STORE = 'editor-local-webllm-v1';
+  const $ = (s, r=document) => r.querySelector(s);
+  const uid = () => crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
+  const state = { lang:'ar', messages:[], busy:false, engine:null, loading:false, progress:'', webgpu:false };
+  try { Object.assign(state, JSON.parse(localStorage.getItem(STORE) || '{}')); } catch {}
+  if (!Array.isArray(state.messages)) state.messages=[];
+  const ar = () => state.lang === 'ar';
+  const t = (a,e) => ar() ? a : e;
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify({lang:state.lang,messages:state.messages.slice(-40)})); } catch {} };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const toast = text => { document.querySelector('.toast')?.remove(); const n=document.createElement('div'); n.className='toast'; n.textContent=text; document.body.append(n); setTimeout(()=>n.remove(),3000); };
+
+  async function loadEngine() {
+    if (state.engine || state.loading) return state.engine;
+    if (!('gpu' in navigator)) throw new Error(t('هذا المتصفح لا يدعم WebGPU. استخدم Chrome أو Edge حديثاً.', 'WebGPU is not supported. Use a recent Chrome or Edge browser.'));
+    state.loading=true; state.progress=t('جاري تحميل محرك الذكاء الاصطناعي...', 'Loading the local AI engine...'); render();
+    try {
+      const {CreateMLCEngine} = await import('https://esm.run/@mlc-ai/web-llm');
+      state.engine = await CreateMLCEngine(MODEL, {
+        initProgressCallback: p => { state.progress = p?.text || `${Math.round((p?.progress || 0)*100)}%`; render(); }
+      });
+      state.webgpu=true; state.progress=t('النموذج المحلي جاهز.', 'Local model ready.');
+      return state.engine;
+    } catch (e) {
+      state.progress=''; throw e;
+    } finally { state.loading=false; render(); }
+  }
+
+  async function ask(prompt) {
+    const engine = await loadEngine();
+    const history = state.messages.filter(m=>m.role==='user'||m.role==='assistant').slice(-12).map(m=>({role:m.role,content:m.content}));
+    const system = ar() ? 'أنت مساعد عربي مفيد ودقيق. أجب مباشرة وبوضوح، واذكر أنك تعمل محلياً عند الحاجة.' : 'You are a helpful, accurate assistant. Answer directly and clearly. You run locally in the browser.';
+    const result = await engine.chat.completions.create({
+      messages:[{role:'system',content:system},...history,{role:'user',content:prompt}],
+      temperature:0.7, max_tokens:768
+    });
+    return result.choices?.[0]?.message?.content?.trim() || t('لم ينتج النموذج رداً.', 'The model returned no response.');
+  }
+
+  function render() {
+    document.documentElement.lang=state.lang; document.documentElement.dir=ar()?'rtl':'ltr'; document.title=ar()?'مختبر EDITOR':'EDITOR Lab';
+    const messages = state.messages.length ? state.messages.map(m=>`<article class="msg ${m.role}"><div class="msg-head">${m.role==='user'?t('أنت','You'):t('الذكاء الاصطناعي المحلي','Local AI')}</div><div>${esc(m.content)}</div></article>`).join('') : `<div class="welcome"><div class="logo" style="margin:auto">✦</div><h2>${t('ذكاء اصطناعي محلي حقيقي','Real Local AI')}</h2><p>${t('يعمل النموذج داخل متصفحك باستخدام WebGPU بدون GEMINI_API_KEY. أول تشغيل يحتاج تنزيل النموذج.', 'The model runs inside your browser with WebGPU without GEMINI_API_KEY. The first run downloads the model.')}</p></div>`;
+    $('#app').innerHTML=`<div class="app"><header><div class="logo">✦</div><div class="brand">${t('مختبر EDITOR','EDITOR Lab')}</div><span class="status">● ${state.engine?t('النموذج جاهز','Model ready'):t('محلي بدون مفتاح','Local · no key')}</span><div class="actions"><button class="btn" data-act="load" ${state.loading?'disabled':''}>⚡ ${t('تشغيل النموذج','Load model')}</button><button class="btn" data-act="lang">${ar()?'EN':'عربي'}</button><button class="btn" data-act="export">${t('تصدير','Export')}</button><button class="btn" data-act="clear">${t('مسح','Clear')}</button></div></header><div class="info">${state.progress || t('النموذج: '+MODEL+' — ذكاء اصطناعي حقيقي محلي، وليس ردوداً ثابتة.', 'Model: '+MODEL+' — real local AI, not canned replies.')}</div><main class="chat"><div id="messages" class="messages">${messages}</div><div class="composer"><textarea id="prompt" rows="2" placeholder="${t('اكتب رسالتك...','Type your message...')}" ${state.busy?'disabled':''}></textarea><div class="compose"><span class="grow"></span><button class="btn primary" data-act="send" ${state.busy?'disabled':''}>➤ ${state.busy?t('جاري التفكير...','Thinking...'):t('إرسال','Send')}</button></div></div></main></div>`;
+    bind(); const box=$('#messages'); if(box) box.scrollTop=box.scrollHeight;
+  }
+
+  async function send() {
+    const input=$('#prompt'); const prompt=input?.value.trim(); if(!prompt||state.busy)return;
+    state.busy=true; state.messages.push({id:uid(),role:'user',content:prompt}); state.messages.push({id:uid(),role:'assistant',content:t('جاري التفكير...','Thinking...')}); render();
+    try { state.messages[state.messages.length-1].content=await ask(prompt); }
+    catch(e) { state.messages[state.messages.length-1].content=t('تعذر تشغيل النموذج المحلي: '+(e.message||e), 'Could not start the local model: '+(e.message||e)); toast(t('تحقق من دعم WebGPU واتصال الإنترنت لتنزيل النموذج.', 'Check WebGPU support and internet access to download the model.')); }
+    state.busy=false; save(); render();
+  }
+  function bind() {
+    document.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click', async()=>{
+      const a=b.dataset.act;
+      if(a==='lang'){state.lang=ar()?'en':'ar';save();render();}
+      else if(a==='clear'){state.messages=[];save();render();}
+      else if(a==='load'){try{await loadEngine();}catch(e){toast(e.message||String(e));}}
+      else if(a==='send')send();
+      else if(a==='export'){const text=state.messages.map(m=>`${m.role}: ${m.content}`).join('\n\n'); const u=URL.createObjectURL(new Blob([text],{type:'text/plain'})); const link=document.createElement('a');link.href=u;link.download='editor-local-chat.txt';link.click();setTimeout(()=>URL.revokeObjectURL(u),500);}
+    }));
+    $('#prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+  }
+  render();
+</script>
 </body>
 </html>
