@@ -2,120 +2,132 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="EDITOR Lab - private local AI chat">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EDITOR Lab - free AI chat">
   <title>مختبر EDITOR</title>
   <style>
     :root{color-scheme:dark;--bg:#080d16;--panel:#111c2e;--panel2:#0b1424;--line:#293a55;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#10b981;--danger:#ef4444}
-    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}button,textarea{font:inherit}button{cursor:pointer;color:inherit}button:disabled{opacity:.55;cursor:not-allowed}.app{height:100%;display:flex;flex-direction:column;background:var(--panel)}header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-size:24px;font-weight:800}.brand{font-weight:800;flex:1}.status{font-size:11px;color:#86efac}.actions{display:flex;gap:7px;align-items:center}.btn{padding:8px 12px;border-radius:9px;background:#16233a;border:1px solid var(--line);font-size:12px}.btn:hover{background:#203454}.primary{background:var(--blue);border-color:#3b82f6}.info{padding:10px 16px;background:#172554;color:#bfdbfe;border-bottom:1px solid #1d4ed8;font-size:12px;line-height:1.6}.small{font-size:11px;color:#cbd5e1}.chat{min-height:0;flex:1;display:flex;flex-direction:column}.messages{min-height:0;flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.welcome{text-align:center;max-width:650px;margin:auto;color:var(--muted)}.welcome h2{color:var(--text)}.msg{max-width:min(850px,92%);padding:12px 14px;border-radius:14px;white-space:pre-wrap;word-break:break-word;line-height:1.65;border:1px solid var(--line)}.msg.user{align-self:flex-end;background:#2563eb;border-top-right-radius:3px}.msg.assistant{align-self:flex-start;background:#1e293b;border-top-left-radius:3px}.msg-head{font-size:11px;font-weight:700;color:#bfdbfe;margin-bottom:5px}.composer{padding:12px 16px;background:var(--panel2);border-top:1px solid var(--line)}textarea{width:100%;min-height:52px;max-height:180px;resize:vertical;padding:12px;border-radius:10px;background:#16233a;border:1px solid var(--line);color:#fff;outline:0}textarea:focus{border-color:#3b82f6}.compose{display:flex;gap:8px;margin-top:8px;align-items:center}.grow{flex:1}.toast{position:fixed;z-index:5;top:70px;left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);padding:10px 14px;border-radius:9px;background:#020617;border:1px solid #475569;box-shadow:0 8px 30px #0008;font-size:12px}.error{color:#fecaca}@media(max-width:700px){header{padding:9px}.status{display:none}.messages{padding:12px}.composer{padding:10px}.actions .btn{padding:7px 8px}.msg{max-width:97%}}
+    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}.app{height:100%;display:flex;flex-direction:column;max-width:1100px;margin:auto;background:var(--panel)}header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--panel2);border-bottom:1px solid var(--line)}.logo{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#fff,#94a3b8);color:#0f172a;font-size:22px;font-weight:800}.brand{font-weight:800;font-size:16px;flex:1}.status{color:var(--green);font-size:12px}.toolbar{display:flex;gap:8px}button{border:1px solid var(--line);border-radius:9px;background:#16233a;color:var(--text);padding:8px 11px;cursor:pointer}button:hover{background:#203454}button:disabled{opacity:.5;cursor:not-allowed}.messages{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px}.empty{text-align:center;color:var(--muted);margin:auto;max-width:560px}.msg{max-width:85%;padding:13px 15px;border-radius:15px;line-height:1.8;white-space:pre-wrap;word-break:break-word}.msg.user{align-self:flex-end;background:var(--blue);border-top-right-radius:3px}.msg.assistant{align-self:flex-start;background:#1e293b;border:1px solid var(--line);border-top-left-radius:3px}.msg-head{font-size:11px;color:#bfdbfe;margin-bottom:5px;font-weight:700}.msg.assistant .msg-head{color:#86efac}.composer{display:flex;gap:9px;padding:13px 16px;background:var(--panel2);border-top:1px solid var(--line)}input{flex:1;min-width:0;border:1px solid var(--line);border-radius:11px;background:#16233a;color:var(--text);padding:12px 14px;font-size:14px;outline:none}input:focus{border-color:#3b82f6}.send{background:var(--blue);font-weight:700}.notice{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:2;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#0f172a;box-shadow:0 8px 30px #0008;font-size:12px}.notice.error{border-color:#ef4444;color:#fecaca}.typing{color:#93c5fd}.hint{font-size:12px;color:var(--muted);margin-top:12px}.key{direction:ltr;display:inline-block;font-family:monospace;color:#bfdbfe}@media(max-width:600px){header{padding:10px}.messages{padding:14px}.msg{max-width:94%}.toolbar button{padding:7px 8px}.toolbar span{display:none}}
   </style>
 </head>
 <body>
-<div id="app"></div>
-<script type="module">
-(() => {
-  'use strict';
+  <div id="app"></div>
+  <script>
+  (() => {
+    'use strict';
 
-  const STORE = 'editor-private-local-ai-v3';
-  const WEBLLM_MODEL = 'Llama-3.2-1B-Instruct-q4f16_1-MLC';
-  const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
-  const OLLAMA_MODEL = 'llama3.2';
-  const $ = (s, root = document) => root.querySelector(s);
-  const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const state = { lang:'ar', messages:[], busy:false, loading:false, provider:null, engine:null, progress:'' };
+    // Pollinations is a public, keyless AI gateway. Override it with
+    // window.EDITOR_AI_ENDPOINT before this script if your deployment uses another gateway.
+    const AI_ENDPOINT = window.EDITOR_AI_ENDPOINT || 'https://gen.pollinations.ai/v1/chat/completions';
+    const AI_MODEL = window.EDITOR_AI_MODEL || 'openai';
+    const STORE = 'editor-free-ai-chat-v1';
+    const REQUEST_TIMEOUT = 45000;
+    const state = { lang:'ar', messages:[], busy:false, notice:'' };
+    const $ = (selector, root=document) => root.querySelector(selector);
+    const uid = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const isArabic = () => state.lang === 'ar';
+    const t = (ar, en) => isArabic() ? ar : en;
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  try { Object.assign(state, JSON.parse(localStorage.getItem(STORE) || '{}')); } catch (_) {}
-  if (!['ar','en'].includes(state.lang)) state.lang = 'ar';
-  if (!Array.isArray(state.messages)) state.messages = [];
-
-  const ar = () => state.lang === 'ar';
-  const t = (a, e) => ar() ? a : e;
-  const save = () => { try { localStorage.setItem(STORE, JSON.stringify({ lang:state.lang, messages:state.messages.slice(-40) })); } catch (_) {} };
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const toast = text => { document.querySelector('.toast')?.remove(); const n=document.createElement('div'); n.className='toast'; n.textContent=text; document.body.appendChild(n); setTimeout(() => n.remove(), 3500); };
-
-  async function fetchWithTimeout(url, options = {}, ms = 12000) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ms);
-    try { return await fetch(url, { ...options, signal:controller.signal }); }
-    finally { clearTimeout(timer); }
-  }
-
-  async function askOllama(prompt) {
     try {
-      const response = await fetchWithTimeout(OLLAMA_URL, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ model:OLLAMA_MODEL, prompt, stream:false, options:{temperature:.7, num_predict:768} })
-      });
-      if (!response.ok) return null;
-      const data = await response.json();
-      const answer = data?.response || data?.content || data?.output_text;
-      if (typeof answer !== 'string' || !answer.trim()) return null;
-      state.provider = 'ollama';
+      const saved = JSON.parse(localStorage.getItem(STORE) || '{}');
+      if (saved.lang === 'ar' || saved.lang === 'en') state.lang = saved.lang;
+      if (Array.isArray(saved.messages)) state.messages = saved.messages.filter(m => m && (m.role === 'user' || m.role === 'assistant')).slice(-40);
+    } catch (_) {}
+
+    function save() {
+      try { localStorage.setItem(STORE, JSON.stringify({lang:state.lang, messages:state.messages.slice(-40)})); } catch (_) {}
+    }
+
+    function showNotice(message, error=false) {
+      state.notice = message;
+      render();
+      window.clearTimeout(showNotice.timer);
+      showNotice.timer = window.setTimeout(() => { state.notice = ''; render(); }, 4500);
+      if (error) console.error(message);
+    }
+
+    async function requestAI(prompt) {
+      const history = state.messages
+        .filter(m => (m.role === 'user' || m.role === 'assistant') && m.content)
+        .slice(-12)
+        .map(m => ({role:m.role, content:m.content}));
+      const response = await fetchWithTimeout(AI_ENDPOINT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+        body:JSON.stringify({
+          model: AI_MODEL,
+          messages:[
+            {role:'system', content:isArabic() ? 'أجب بالعربية مباشرة وبدقة. لا تضف مقدمات تسويقية.' : 'Answer directly and accurately in English. Do not add promotional introductions.'},
+            ...history,
+            {role:'user', content:prompt}
+          ],
+          temperature:0.7,
+          max_tokens:1024,
+          stream:false
+        })
+      }, REQUEST_TIMEOUT);
+      const raw = await response.text();
+      let data;
+      try { data = raw ? JSON.parse(raw) : {}; } catch (_) { throw new Error(t('استجابة غير صالحة من خادم الذكاء الاصطناعي.', 'The AI server returned invalid JSON.')); }
+      if (!response.ok) {
+        const detail = data?.error?.message || data?.message || `${response.status} ${response.statusText}`;
+        throw new Error(`${t('فشل الاتصال بالخادم:', 'AI server request failed:')} ${detail}`);
+      }
+      const answer = data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || data?.response || data?.output_text;
+      if (typeof answer !== 'string' || !answer.trim()) throw new Error(t('لم يُرجع الخادم نصاً.', 'The AI server returned no text.'));
       return answer.trim();
-    } catch (_) { return null; }
-  }
+    }
 
-  async function loadWebLLM() {
-    if (state.engine) return state.engine;
-    if (state.loading) throw new Error(t('النموذج قيد التحميل بالفعل.', 'The model is already loading.'));
-    if (!('gpu' in navigator)) throw new Error(t('WebGPU غير مدعوم. استخدم Chrome أو Edge حديثاً أو ثبّت Ollama.', 'WebGPU is unavailable. Use recent Chrome/Edge or install Ollama.'));
-    state.loading = true; state.progress = t('جاري تحميل النموذج محلياً... قد يستغرق ذلك وقتاً في أول مرة.', 'Downloading the local model; the first run may take time.'); render();
-    try {
-      const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
-      state.engine = await CreateMLCEngine(WEBLLM_MODEL, { initProgressCallback: p => { state.progress = p?.text || `${Math.round((p?.progress || 0) * 100)}%`; render(); } });
-      state.provider = 'webllm'; state.progress = t('النموذج المحلي جاهز والبيانات لا تغادر المتصفح.', 'Local model ready; data stays in the browser.');
-      return state.engine;
-    } finally { state.loading = false; render(); }
-  }
+    async function fetchWithTimeout(url, options, timeout) {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeout);
+      try { return await fetch(url, {...options, signal:controller.signal}); }
+      catch (error) {
+        if (error?.name === 'AbortError') throw new Error(t('انتهت مهلة الاتصال بالخادم.', 'The AI request timed out.'));
+        throw new Error(t('تعذر الاتصال بخادم الذكاء الاصطناعي. تحقق من الإنترنت أو سياسة CORS.', 'Could not connect to the AI server. Check your internet connection or CORS policy.'));
+      } finally { window.clearTimeout(timer); }
+    }
 
-  async function askWebLLM(prompt) {
-    const engine = await loadWebLLM();
-    const history = state.messages.filter(m => m.role === 'user' || m.role === 'assistant').slice(-10).map(m => ({ role:m.role, content:m.content }));
-    const system = ar() ? 'أنت مساعد عربي دقيق ومفيد. أجب مباشرة وبوضوح. أنت تعمل محلياً ولا ترسل بيانات المستخدم إلى خادم.' : 'You are a precise and helpful assistant. Answer directly and clearly. You run locally and do not send user data to a server.';
-    const result = await engine.chat.completions.create({ messages:[{role:'system',content:system}, ...history, {role:'user',content:prompt}], temperature:.7, max_tokens:768 });
-    const answer = result?.choices?.[0]?.message?.content;
-    return typeof answer === 'string' && answer.trim() ? answer.trim() : null;
-  }
+    async function send() {
+      const input = $('#prompt');
+      const prompt = input?.value.trim();
+      if (!prompt || state.busy) return;
+      state.busy = true;
+      input.value = '';
+      state.messages.push({id:uid(), role:'user', content:prompt});
+      state.messages.push({id:uid(), role:'assistant', content:t('جاري الاتصال بخادم الذكاء الاصطناعي...', 'Connecting to the AI server...')});
+      render();
+      try {
+        const answer = await requestAI(prompt);
+        state.messages[state.messages.length - 1].content = answer;
+      } catch (error) {
+        state.messages[state.messages.length - 1].content = t('تعذر الحصول على إجابة.', 'Unable to get an answer.') + '\n\n' + (error?.message || String(error));
+        showNotice(error?.message || String(error), true);
+      } finally {
+        state.busy = false;
+        save();
+        render();
+        $('#prompt')?.focus();
+      }
+    }
 
-  async function getAnswer(prompt) {
-    // Ollama is attempted first: it is private and avoids downloading a browser model.
-    const ollamaAnswer = await askOllama(prompt);
-    if (ollamaAnswer) return ollamaAnswer;
-    try { const webAnswer = await askWebLLM(prompt); if (webAnswer) return webAnswer; }
-    catch (error) { state.progress = error.message || String(error); }
-    throw new Error(t('لا يوجد محرك محلي جاهز. ثبّت Ollama أو فعّل WebGPU ثم أعد المحاولة.', 'No local AI engine is available. Install Ollama or enable WebGPU and try again.'));
-  }
+    function render() {
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = isArabic() ? 'rtl' : 'ltr';
+      document.title = t('مختبر EDITOR', 'EDITOR Lab');
+      const messages = state.messages.length
+        ? state.messages.map(m => `<article class="msg ${m.role}"><div class="msg-head">${m.role === 'user' ? t('أنت','You') : t('الذكاء الاصطناعي','AI')}</div><div>${escapeHtml(m.content)}</div></article>`).join('')
+        : `<div class="empty"><h2>${t('مرحباً بك في مختبر EDITOR','Welcome to EDITOR Lab')}</h2><p>${t('محادثة مباشرة مع خادم ذكاء اصطناعي مجاني. اكتب سؤالك وابدأ.','Direct chat with a free AI server. Type a question to begin.')}</p><p class="hint">${t('الخادم المستخدم: Pollinations AI','AI server: Pollinations AI')}<br><span class="key">${escapeHtml(AI_ENDPOINT)}</span></p></div>`;
+      $('#app').innerHTML = `<div class="app"><header><div class="logo">✦</div><div class="brand">${t('مختبر EDITOR','EDITOR Lab')}</div><div class="status">● ${t('متصل بالخادم المجاني','Free server')}</div><div class="toolbar"><button data-action="language">${t('EN / عربي','AR / English')}</button><button data-action="clear" ${state.messages.length ? '' : 'disabled'}>${t('مسح','Clear')}</button></div></header><main class="messages" id="messages">${messages}</main><form class="composer" id="composer"><input id="prompt" autocomplete="off" placeholder="${t('اكتب رسالتك هنا...','Type your message...')}" ${state.busy ? 'disabled' : ''}><button class="send" type="submit" ${state.busy ? 'disabled' : ''}>${state.busy ? '...' : t('إرسال','Send')}</button></form></div>${state.notice ? `<div class="notice error">${escapeHtml(state.notice)}</div>` : ''}`;
+      $('#composer')?.addEventListener('submit', event => { event.preventDefault(); send(); });
+      $('[data-action="language"]')?.addEventListener('click', () => { state.lang = isArabic() ? 'en' : 'ar'; save(); render(); });
+      $('[data-action="clear"]')?.addEventListener('click', () => { if (!state.busy) { state.messages = []; save(); render(); } });
+      const box = $('#messages'); if (box) box.scrollTop = box.scrollHeight;
+    }
 
-  function render() {
-    document.documentElement.lang = state.lang; document.documentElement.dir = ar() ? 'rtl' : 'ltr'; document.title = ar() ? 'مختبر EDITOR' : 'EDITOR Lab';
-    const content = state.messages.length ? state.messages.map(m => `<article class="msg ${m.role}"><div class="msg-head">${m.role === 'user' ? t('أنت','You') : t('الذكاء الاصطناعي المحلي','Local AI')}</div><div>${escapeHtml(m.content)}</div></article>`).join('') : `<div class="welcome"><div class="logo" style="margin:auto">✦</div><h2>${t('دردشة ذكاء اصطناعي محلية وسرية','Private local AI chat')}</h2><p>${t('الأولوية لـ Ollama المحلي، ثم WebLLM داخل المتصفح. لا يوجد GEMINI_API_KEY ولا تُرسل الرسائل إلى Gemini.', 'Ollama is preferred, then WebLLM in-browser. No GEMINI_API_KEY and no messages are sent to Gemini.')}</p></div>`;
-    $('#app').innerHTML = `<div class="app"><header><div class="logo">✦</div><div class="brand">${t('مختبر EDITOR','EDITOR Lab')}</div><span class="status">● ${state.provider === 'ollama' ? 'Ollama' : state.provider === 'webllm' ? 'WebLLM' : t('محلي','Local')}</span><div class="actions"><button class="btn primary" data-action="load" ${state.loading ? 'disabled' : ''}>⚡ ${t('تشغيل النموذج','Load model')}</button><button class="btn" data-action="language">${ar() ? 'EN' : 'عربي'}</button><button class="btn" data-action="export">${t('تصدير','Export')}</button><button class="btn" data-action="clear">${t('مسح','Clear')}</button></div></header><div class="info"><div>${state.progress || t('وضع خاص محلي: جرّب Ollama أولاً أو WebLLM بدون مفتاح خارجي.', 'Private local mode: Ollama is tried first, then WebLLM without an API key.')}</div><div class="small">${t('لا يمكن تشغيل Gemini الحقيقي بدون مفتاح مصادق؛ هذه نماذج محلية حقيقية.', 'Gemini cannot run without authenticated credentials; these are real local models.')}</div></div><main class="chat"><div id="messages" class="messages">${content}</div><div class="composer"><textarea id="prompt" rows="2" placeholder="${t('اكتب رسالتك...','Type your message...')}" ${state.busy ? 'disabled' : ''}></textarea><div class="compose"><span class="grow"></span><button class="btn primary" data-action="send" ${state.busy ? 'disabled' : ''}>➤ ${state.busy ? t('جاري التفكير...','Thinking...') : t('إرسال','Send')}</button></div></div></main></div>`;
-    bind(); const box = $('#messages'); if (box) box.scrollTop = box.scrollHeight;
-  }
-
-  async function send() {
-    const input = $('#prompt'); const prompt = input?.value.trim(); if (!prompt || state.busy) return;
-    state.busy = true; state.messages.push({id:uid(), role:'user', content:prompt}); state.messages.push({id:uid(), role:'assistant', content:t('جاري التفكير...','Thinking...')}); render();
-    try { state.messages[state.messages.length - 1].content = await getAnswer(prompt); }
-    catch (error) { state.messages[state.messages.length - 1].content = `${t('تعذر تشغيل نموذج محلي حقيقي.','A real local model could not be started.')}\n\n${error.message || error}`; toast(error.message || String(error)); }
-    finally { state.busy = false; save(); render(); }
-  }
-
-  function bind() {
-    document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', async () => {
-      const action = button.dataset.action;
-      if (action === 'language') { state.lang = ar() ? 'en' : 'ar'; save(); render(); return; }
-      if (action === 'clear') { state.messages = []; save(); render(); return; }
-      if (action === 'send') { send(); return; }
-      if (action === 'export') { const blob = new Blob([state.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')], {type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='editor-private-chat.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 500); return; }
-      if (action === 'load') { try { if (await askOllama('قل: جاهز')) toast(t('تم الاتصال بـ Ollama المحلي.','Connected to local Ollama.')); else { await loadWebLLM(); toast(t('تم تشغيل WebLLM محلياً.','Local WebLLM is ready.')); } } catch (e) { toast(e.message || String(e)); } render(); }
-    }));
-    $('#prompt')?.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send(); } });
-  }
-
-  render();
-})();
-</script>
+    render();
+  })();
+  </script>
 </body>
 </html>
